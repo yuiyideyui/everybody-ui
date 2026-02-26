@@ -3,10 +3,10 @@ name: CI/CD Release
 on:
   push:
     branches:
-      - main
+      - main # 确保你的主分支名是 main
 
 permissions:
-  contents: write # 部署到 GitHub Pages 需要写权限
+  contents: write # 部署 GitHub Pages 必需
 
 jobs:
   build-and-deploy:
@@ -19,29 +19,29 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          registry-url: "https://registry.npmjs.org"
-          cache: "npm" # 开启缓存加速安装
 
       - name: Install Dependencies
-        run: npm install
+        # 使用 --legacy-peer-deps 预防 Element Plus 等 UI 库的依赖冲突
+        run: npm install --legacy-peer-deps
 
       # --- 步骤 1：发布到 NPM ---
       - name: Build Library
-        run: npm run dist:build # 对应你的 vite build 脚本
+        run: npm run dist:build
 
       - name: Publish to NPM
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        continue-on-error: true # 预防版本号未更新导致整个流中断
+        # 直接通过命令行设置 Token，绕过 setup-node 可能导致的 Tag 解析问题
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}
+          npm publish --access public
+        continue-on-error: true # 即使版本号未改导致发布失败，也会继续执行文档部署
 
       # --- 步骤 2：更新 VitePress 文档 ---
       - name: Build Docs
-        run: npm run docs:build # 运行你的 vitepress build docs 脚本
+        run: npm run docs:build
 
       - name: Deploy Docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # VitePress 默认打包后的文件夹是 docs/.vitepress/dist
+          # VitePress 默认输出目录
           publish_dir: ./docs/.vitepress/dist
