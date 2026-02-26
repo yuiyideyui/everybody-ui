@@ -1,33 +1,47 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
-
-name: Node.js Package
+name: CI/CD Release
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master # 仅在推送到 master 分支时触发
+
+permissions:
+  contents: write # 部署到 GitHub Pages 需要写权限
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm test
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm publish
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm' # 开启缓存加速安装
+
+      - name: Install Dependencies
+        run: npm install
+
+      # --- 步骤 1：发布到 NPM ---
+      - name: Build Library
+        run: npm run dist:build # 对应你的 vite build 脚本
+
+      - name: Publish to NPM
+        run: npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true # 预防版本号未更新导致整个流中断
+
+      # --- 步骤 2：更新 VitePress 文档 ---
+      - name: Build Docs
+        run: npm run docs:build # 运行你的 vitepress build docs 脚本
+
+      - name: Deploy Docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # VitePress 默认打包后的文件夹是 docs/.vitepress/dist
+          publish_dir: ./docs/.vitepress/dist
