@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "dist:build": "vite build",
     "docs:dev": "vitepress dev docs",
