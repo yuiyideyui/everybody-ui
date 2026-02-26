@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",           // 保持 JSX，交给 Vite/Babel 处理
+    "jsxImportSource": "vue",    // 关键：指定 JSX 的来源是 vue
+    "types": ["vite/client"],    // 确保包含环境定义
+    "moduleResolution": "node",
+    "strict": true
+  },
+  "include": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.vue", "docs/**/*.vue"]
+}
