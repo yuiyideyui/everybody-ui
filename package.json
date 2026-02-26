@@ -1,5 +1,8 @@
 {
-  "version": "1.0.1",
+  "name": "everybody-ui", 
+  "version": "1.0.3",
+  "private": false,
+  "type": "module",
   "scripts": {
     "dist:build": "vite build",
     "docs:dev": "vitepress dev docs",
