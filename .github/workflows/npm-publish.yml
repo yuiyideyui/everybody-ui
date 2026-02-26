@@ -1,50 +1,47 @@
-name: Release and Deploy
+name: CI/CD Release
 
 on:
   push:
     branches:
-      - master # 监听推送到 master 分支的操作
+      - master # 仅在推送到 master 分支时触发
+
+permissions:
+  contents: write # 部署到 GitHub Pages 需要写权限
 
 jobs:
-  # 任务一：发布到 NPM
-  publish-npm:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-          
+          cache: 'npm' # 开启缓存加速安装
+
       - name: Install Dependencies
         run: npm install
-        
-      # 注意：只有当 package.json 中的版本号发生变化时，npm publish 才会成功
+
+      # --- 步骤 1：发布到 NPM ---
+      - name: Build Library
+        run: npm run dist:build # 对应你的 vite build 脚本
+
       - name: Publish to NPM
-        run: npm publish
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true # 预防版本号未更新导致整个流中断
 
-  # 任务二：更新文档网站 (以 GitHub Pages 为例)
-  deploy-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          
-      - name: Install and Build Docs
-        run: |
-          npm install
-          npm run docs:build # 假设你的文档构建命令是这个
-          
-      - name: Deploy to GitHub Pages
+      # --- 步骤 2：更新 VitePress 文档 ---
+      - name: Build Docs
+        run: npm run docs:build # 运行你的 vitepress build docs 脚本
+
+      - name: Deploy Docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/.vuepress/dist # 替换为你文档生成的实际目录
+          # VitePress 默认打包后的文件夹是 docs/.vitepress/dist
+          publish_dir: ./docs/.vitepress/dist
