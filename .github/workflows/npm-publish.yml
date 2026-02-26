@@ -4,12 +4,20 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "v*"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-deploy:
+  build:
+    name: Build packages and docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,28 +27,67 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          # 必须在这里指定 registry，它会生成一个指向环境变量的 .npmrc
           registry-url: "https://registry.npmjs.org"
+          cache: npm
 
       - name: Install Dependencies
-        run: npm install --include=dev --legacy-peer-deps
+        run: npm ci --include=dev --legacy-peer-deps
+
+      - name: Build Library
+        run: npm run dist:build
+
+      - name: Build Docs
+        run: npm run docs:build
+
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-dist
+          path: docs/.vitepress/dist
+          if-no-files-found: error
+
+  publish:
+    name: Publish to NPM
+    needs: build
+    runs-on: ubuntu-latest
+    # 仅在 tag 推送或手动触发时发布，避免每次 main push 都发布
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci --include=dev --legacy-peer-deps
 
       - name: Build Library
         run: npm run dist:build
 
       - name: Publish to NPM
-        # 确保 publish 运行在配置了 registry 的环境下
         run: npm publish --access public
         env:
-          # 名字必须严格叫 NODE_AUTH_TOKEN
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        continue-on-error: true
 
-      - name: Build Docs
-        run: npm run docs:build
+  deploy-docs:
+    name: Deploy docs to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Download docs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-dist
+          path: docs/.vitepress/dist
 
       - name: Deploy Docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/.vitepress/dist
+          publish_dir: docs/.vitepress/dist
