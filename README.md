@@ -2,6 +2,10 @@
 
 Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项目，目标是提供统一、可扩展、易维护的前端 UI 基础能力。
 
+## 项目docs地址
+
+[Everybody UI](https://yuiyideyui.github.io/everybody-ui/)
+
 ## 项目简介
 
 本项目当前包含：

@@ -6,7 +6,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { resolve } from 'path'
 import { vitepressDemoPlugin } from 'vitepress-demo-plugin'; 
 export default defineConfig({
-  title: "YUI_DOCS",
+  title: "Everybody-UI_DOCS",
   base: '/everybody-ui/',
   themeConfig: {
     sidebar: [
@@ -46,11 +46,11 @@ export default defineConfig({
     },
     ssr: {
       // 2. 解决服务端渲染时 element-plus 内部样式或指令报错问题
-      noExternal: ['element-plus', 'everybody']
+      noExternal: ['element-plus', 'everybody-ui']
     },
     optimizeDeps: {
       // 3. 排除你的库，防止 Vite 对其进行二次加工导致上下文丢失
-      exclude: ['everybody'],
+      exclude: ['everybody-ui'],
       // 包含 element-plus 的相关依赖，确保预构建正确
       include: ['element-plus/es', 'element-plus/es/components/table/style/css']
     }

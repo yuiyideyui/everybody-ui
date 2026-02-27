@@ -2,9 +2,8 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "yui_doc",
-  description: "自我测试",
-
+  title: "Everybody-UI_DOCS",
+  description: "Everybody-UI",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
