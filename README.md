@@ -1,41 +1,29 @@
 # Everybody UI
 
-Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项目，目标是提供统一、可扩展、易维护的前端 UI 基础能力。
+Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项目，现已调整为 **Monorepo + pnpm Workspace** 结构，方便组件库与文档分包管理。
 
 ## 项目docs地址
 
 [Everybody UI](https://yuiyideyui.github.io/everybody-ui/)
 
-## 项目简介
+## Monorepo 结构
 
-本项目当前包含：
+本仓库当前包含两个 workspace：
 
-- 组件库源码入口（`packages/`）
-- 基于 VitePress 的文档站点（`docs/`）
-- TypeScript 与构建相关配置（`tsconfig.json`、`vite.config.ts` 等）
-
-你可以将它作为：
-
-1. 企业内部组件库的起步模板
-2. 中后台项目的 UI 能力沉淀仓库
-3. 个人/团队设计系统的文档化基础设施
-
-## 技术栈
-
-- **VitePress**：用于文档站点构建
-- **Vite**：构建与开发支持
-- **TypeScript**：类型定义与工程可维护性
-- **Element Plus**：基础组件依赖
-- **Less / PostCSS**：样式扩展与处理
+- `packages/`：组件库包（`everybody-ui`）
+- `docs/`：文档站点包（`everybody-ui-docs`）
 
 ## 目录结构
 
 ```text
 .
-├── docs/                # 文档站点
-├── packages/            # 组件库代码与类型入口
-├── package.json         # npm scripts 与依赖
-├── vite.config.ts       # Vite 构建配置
+├── docs/                # 文档站点 workspace
+│   └── package.json
+├── packages/            # 组件库 workspace
+│   └── package.json
+├── package.json         # monorepo 根配置（统一脚本）
+├── pnpm-workspace.yaml  # pnpm workspace 定义
+├── vite.config.ts       # 组件库构建配置
 └── tsconfig.json        # TypeScript 配置
 ```
 
@@ -44,33 +32,33 @@ Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项
 ### 1. 安装依赖
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. 启动文档开发环境
 
 ```bash
-npm run docs:dev
+pnpm docs:dev
 ```
 
 ### 3. 构建文档
 
 ```bash
-npm run docs:build
+pnpm docs:build
 ```
 
-### 4. 本地预览文档构建结果
+### 4. 构建组件库
 
 ```bash
-npm run docs:preview
+pnpm build
 ```
 
-## 后续建议
+## 常用 Workspace 命令
 
-- 增加组件示例页与 API 文档规范
-- 建立版本发布流程（如 Changesets）
-- 接入自动化测试与代码规范检查
-- 完善主题与设计 Token 体系
+```bash
+# 仅构建组件库 workspace
+pnpm --filter everybody-ui build
 
----
-
+# 仅启动文档 workspace
+pnpm --filter everybody-ui-docs dev
+```
