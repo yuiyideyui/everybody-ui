@@ -5,7 +5,7 @@ import type { App } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 // 2. 引入你的组件库
-import everybody from 'everybody-ui/dist/everybody'
+import everybody from 'everybody-ui'
 import 'everybody-ui/dist/everybody.css'
 import './custom.css'
 export default {
