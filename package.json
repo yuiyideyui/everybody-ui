@@ -10,6 +10,13 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    }
+  },
   "scripts": {
     "everybody-ui:build": "vite build",
     "docs:dev": "vitepress dev docs",
@@ -30,6 +37,6 @@
   },
   "dependencies": {
     "element-plus": "^2.13.2",
-    "everybody-ui": "^1.0.7"
+    "everybody-ui": "^1.0.10"
   }
 }
