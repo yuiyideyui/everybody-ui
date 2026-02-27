@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "element-plus": "^2.13.2",
-    "everybody-ui": "^1.0.7"
+    "everybody-ui": "^1.0.10"
   }
 }
