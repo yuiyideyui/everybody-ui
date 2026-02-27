@@ -1,8 +1,12 @@
 {
-  "name": "everybody-ui", 
-  "version": "1.0.6",
+  "name": "everybody-ui",
+  "version": "1.0.7",
   "private": false,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/yuiyideyui/everybody-ui"
+  },
   "scripts": {
     "dist:build": "vite build",
     "docs:dev": "vitepress dev docs",
@@ -25,4 +29,3 @@
     "element-plus": "^2.13.2"
   }
 }
-
