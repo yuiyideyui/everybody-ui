@@ -39,7 +39,6 @@
     "vitepress-demo-plugin": "^1.5.1"
   },
   "dependencies": {
-    "element-plus": "^2.13.2",
-    "everybody-ui": "^1.0.12"
+    "element-plus": "^2.13.2"
   }
 }
