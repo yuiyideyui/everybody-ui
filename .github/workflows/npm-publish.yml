@@ -38,11 +38,11 @@ jobs:
         run: npm run everybody-ui:build
 
       # --- 第二步：发布到 NPM（仅在有 Tag 时运行） ---
-      - name: Publish to NPM
-        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish to NPM (自动检测版本)
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: "public"
 
       # --- 第三步：打包文档 ---
       # 此时 NPM 包可能已经发布，文档构建可以确保是最新的
