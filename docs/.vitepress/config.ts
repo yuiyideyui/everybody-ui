@@ -48,9 +48,9 @@ export default defineConfig({
       alias: {
         // 核心修正：当文档里 import { ... } from 'everybody-ui' 时
         // 直接让它指向你本地刚 build 出来的 index.js
-        "everybody-ui": resolve(__dirname, "../../dist/index.js"),
+        "everybody-ui": resolve(__dirname, "../../packages/dist/index.js"),
         // 方便你引用样式文件
-        "@dist": resolve(__dirname, "../../dist"),
+        "@dist": resolve(__dirname, "../../packages/dist"),
       },
     },
     ssr: {

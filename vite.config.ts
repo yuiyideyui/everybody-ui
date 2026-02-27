@@ -15,7 +15,7 @@ export default defineConfig({
       // 生成 .d.ts 类型文件，解决你说的“TS提示没了”的问题
       insertTypesEntry: true,
       cleanVueFileName: true,
-      outDir: "dist/types", // 建议统一存放类型文件
+      outDir: resolve(__dirname, "packages/dist/types"), // monorepo 下输出到 packages/dist/types
     }),
   ],
   resolve: {
@@ -25,6 +25,7 @@ export default defineConfig({
   build: {
     // 开启 sourcemap，这样报错时你能看到源码行号而非 mjs 的行号
     sourcemap: true, 
+    outDir: resolve(__dirname, "packages/dist"),
     lib: {
       // 这里的路径确保指向你的入口 main.ts
       entry: resolve(__dirname, "packages/main.ts"),
