@@ -7,6 +7,7 @@ import { resolve } from 'path'
 import { vitepressDemoPlugin } from 'vitepress-demo-plugin'; 
 export default defineConfig({
   title: "YUI_DOCS",
+  base: '/everybody-ui/',
   themeConfig: {
     sidebar: [
       {
