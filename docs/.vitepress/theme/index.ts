@@ -1,18 +1,19 @@
-// .vitepress/theme/index.ts
 import DefaultTheme from 'vitepress/theme'
 import type { App } from 'vue'
-// 1. 全量引入 ElementPlus
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-// 2. 引入你的组件库
+// 利用你设置的别名
 import everybody from 'everybody-ui'
-import 'everybody-ui/dist/everybody.css'
+import '@dist/index.css' 
 import './custom.css'
+
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }: { app: App }) {
-    // 3. 显式注册，这样就不再报 "Failed to resolve component"
     app.use(ElementPlus)
     app.use(everybody)
+    
+    // 如果你在文档里直接用了 Element Plus 的指令或图标，
+    // 可以在这里额外处理，但目前这样 app.use 已经涵盖了大部分基础
   }
 }

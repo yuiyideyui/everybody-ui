@@ -1,22 +1,25 @@
 {
   "name": "everybody-ui",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "private": false,
   "type": "module",
   "repository": {
     "type": "git",
     "url": "git@github.com/yuiyideyui/everybody-ui"
   },
-  "files": [
-    "dist"
-  ],
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/types/main.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/types/main.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.umd.cjs"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "everybody-ui:build": "vite build",
     "docs:dev": "vitepress dev docs",
@@ -37,6 +40,6 @@
   },
   "dependencies": {
     "element-plus": "^2.13.2",
-    "everybody-ui": "^1.0.10"
+    "everybody-ui": "^1.0.12"
   }
 }

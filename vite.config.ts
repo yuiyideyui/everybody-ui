@@ -28,8 +28,8 @@ export default defineConfig({
     lib: {
       // 这里的路径确保指向你的入口 main.ts
       entry: resolve(__dirname, "packages/main.ts"),
-      name: "everybody",
-      fileName: "everybody",
+      name: "index",
+      fileName: "index",
       formats: ["es", "umd"], // 同时输出 ESM 和 UMD 格式
     },
     rollupOptions: {
