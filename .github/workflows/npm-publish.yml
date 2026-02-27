@@ -68,7 +68,7 @@ jobs:
         run: npm ci --include=dev --legacy-peer-deps
 
       - name: Build Library
-        run: npm run dist:build
+        run: npm run everybody-ui:build
 
       - name: Publish to NPM
         run: npm publish --access public
