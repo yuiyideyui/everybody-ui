@@ -16,36 +16,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build packages and docs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          registry-url: "https://registry.npmjs.org"
-          cache: npm
-
-      - name: Install Dependencies
-        run: npm ci --include=dev --legacy-peer-deps
-
-      - name: Build Library
-        run: npm run everybody-ui:build
-
-      - name: Build Docs
-        run: npm run docs:build
-
-      - name: Upload docs artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docs-dist
-          path: docs/.vitepress/dist
-          if-no-files-found: error
-
   publish:
     name: Publish to NPM
     needs: build
@@ -75,6 +45,35 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  build:
+    name: Build packages and docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci --include=dev --legacy-peer-deps
+
+      - name: Build Library
+        run: npm run everybody-ui:build
+
+      - name: Build Docs
+        run: npm run docs:build
+
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-dist
+          path: docs/.vitepress/dist
+          if-no-files-found: error
   deploy-docs:
     name: Deploy docs to GitHub Pages
     needs: build
