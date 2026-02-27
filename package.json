@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.13.1",
+  "workspaces": [
+    "packages",
+    "docs"
+  ],
   "scripts": {
-    "build": "pnpm --filter everybody-ui build",
-    "docs:dev": "pnpm --filter everybody-ui-docs dev",
-    "docs:build": "pnpm --filter everybody-ui-docs build",
-    "docs:preview": "pnpm --filter everybody-ui-docs preview"
+    "build": "npm run build -w everybody-ui",
+    "docs:dev": "npm run dev -w everybody-ui-docs",
+    "docs:build": "npm run build -w everybody-ui-docs",
+    "docs:preview": "npm run preview -w everybody-ui-docs"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",

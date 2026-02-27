@@ -9,7 +9,7 @@
     "preview": "vitepress preview"
   },
   "dependencies": {
-    "everybody-ui": "workspace:*",
+    "everybody-ui": "file:../packages",
     "element-plus": "^2.13.2"
   }
 }
