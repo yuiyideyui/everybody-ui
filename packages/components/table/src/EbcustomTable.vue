@@ -23,7 +23,7 @@
 
 <script setup lang="tsx">
 import { ElTableColumn } from 'element-plus'
-import type { everybodyTableHeader } from './customTable.type'
+import type { everybodyTableHeader } from './EbcustomTable.type'
 import {
     ref,
     computed,
@@ -66,7 +66,9 @@ const TableColumnsRender = defineComponent({
             required: true
         }
     },
-    setup(props) {
+    setup(props:{
+        columns:everybodyTableHeader
+    }) {
         const renderColumns = (columns: everybodyTableHeader) => {
             return columns.map((item, index) => {
                 if (item.children && item.children.length > 0) {
@@ -105,8 +107,11 @@ const TableColumnsRender = defineComponent({
                                                     class={item.boxClass || ''}
                                                     style={item.boxStyle}
                                                     onClick={(e: MouseEvent) => {
-                                                        e.stopPropagation()
-                                                        custom.click?.(row)
+                                                        if(custom.click){
+                                                            e.stopPropagation()
+                                                            custom.click?.(row)
+                                                        }
+                                                        
                                                     }}
                                                 />,
                                                 [
