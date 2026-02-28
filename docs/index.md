@@ -3,9 +3,8 @@
 layout: home
 
 hero:
-  name: "Everybody-UI_DOCS"
-  text: "docs"
-  tagline: 哈？
+  name: "Everybody-UI"
+  tagline: Everybody UI 是一个基于 **Vite + Vue + 其他UI的生态**构建的组件库。
   actions:
     - theme: brand
       text: 安装

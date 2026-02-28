@@ -14,18 +14,18 @@ export default {
 
 function renderContent(el: Element, binding: DirectiveBinding, vnode: VNode) {
   try {
-    const [renderFn, currentValue, rowData, prop] = binding.value;
+    const [renderFn, val, rowData, prop] = binding.value;
     const [_, oldValue, oldRowData] = binding.oldValue || [];
 
     const shouldUpdate =
-      currentValue !== oldValue ||
+      val !== oldValue ||
       JSON.stringify(rowData) !== JSON.stringify(oldRowData);
 
     if (shouldUpdate) {
       render(
         renderFn(
           {
-            currentValue,
+            val,
             rowData,
             prop,
           },

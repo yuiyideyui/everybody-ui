@@ -6,13 +6,13 @@ type ItableHeaderNoChildren = {
   customList?: {
     cellRenderer?: (
       nodeData: {
-        //this row value
+        //this rowData value
         val: string;
-        //this row
-        row: {
+        //this rowData
+        rowData: {
           [key: string]: any;
         };
-        //this row prop -> row[prop] === val
+        //this rowData prop -> rowData[prop] === val
         prop: string;
       },
       el: Element,
@@ -21,23 +21,25 @@ type ItableHeaderNoChildren = {
     ) => void;
     /**
      * use click stopPropagation,stop rowClick Event
-     * @param row this row
+     * @param rowData this rowData
      * @returns void
      */
-    click?: (row: { [key: string]: any }) => void;
+    click?: (rowData: { [key: string]: any }) => void;
   }[];
   showOverflowTooltip?: boolean;
   width?: string;
   boxClass?: string;
   boxStyle?: string;
   children?: never;
-}[];
+};
 type ItableHeaderChildren = {
-  children: ItableHeaderNoChildren; // 支持多级表头
+  children: ItableHeaderNoChildren[]; // 支持多级表头
   label: string;
   align?: string;
   prop?: never;
-}[];
-export type everybodyTableHeader =
-  | ItableHeaderNoChildren
-  | ItableHeaderChildren;
+};
+// 3. 定义单个表头项类型（联合类型）
+type everybodyTableHeaderItem = ItableHeaderNoChildren | ItableHeaderChildren;
+
+// 4. 最终导出的数组类型
+export type everybodyTableHeader = everybodyTableHeaderItem[];
