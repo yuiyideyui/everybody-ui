@@ -1,6 +1,6 @@
 # Everybody UI
 
-Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项目，现已调整为 **Monorepo + npm Workspace** 结构，方便组件库与文档分包管理。
+Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项目。
 
 ## 项目docs地址
 
