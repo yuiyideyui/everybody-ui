@@ -1,10 +1,10 @@
 <template>
-  <eb-customTable
+  <EbcustomTable
     width="100%"
     :stripe="false"
     :tableHeader="header"
     :data="data"
-  ></eb-customTable>
+  ></EbcustomTable>
   <el-tooltip
     ref="tooltipRef"
     :visible="showTooltip"

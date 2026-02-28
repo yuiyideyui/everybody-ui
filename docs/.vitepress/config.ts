@@ -3,29 +3,14 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import { EverybodyUIResolver } from "everybody-ui/resolver";
 import { vitepressDemoPlugin } from "vitepress-demo-plugin";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import vitepressTheme from './vitepressTheme'
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
-  title: "Everybody-UI_DOCS",
-  base: "/everybody-ui/",
-  themeConfig: {
-    sidebar: [
-      {
-        text: "基础指令",
-        items: [
-          { text: "数字动画指令", link: "/Directives/NumTransition/animate" },
-        ],
-      },
-      {
-        text: "组件",
-        items: [
-          { text: "自定义表格", link: "/components/customTable/customTable" },
-        ],
-      },
-    ],
-  },
+  ...vitepressTheme,
   markdown: {
     config(md) {
       md.use(vitepressDemoPlugin);
@@ -35,10 +20,10 @@ export default defineConfig({
     plugins: [
       vueJsx(),
       AutoImport({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver(),EverybodyUIResolver()],
       }),
       Components({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver(),EverybodyUIResolver()],
       }),
     ],
     // --- 以下是修复报错的关键配置 ---
@@ -46,11 +31,7 @@ export default defineConfig({
       // 1. 强制使用单例，防止 tableId 查找失败
       dedupe: ["vue", "element-plus"],
       alias: {
-        // 核心修正：当文档里 import { ... } from 'everybody-ui' 时
-        // 直接让它指向你本地刚 build 出来的 index.js
-        "everybody-ui": resolve(__dirname, "../../packages/dist/index.js"),
-        // 方便你引用样式文件
-        "@dist": resolve(__dirname, "../../packages/dist"),
+        "everybody-ui": resolve(__dirname, "../../packages/dist"),
       },
     },
     ssr: {

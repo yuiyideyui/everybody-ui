@@ -6,5 +6,5 @@
 // biome-ignore lint: disable
 export {}
 declare global {
-
+  const EbcustomTable: typeof import('everybody-ui').EbcustomTable
 }
