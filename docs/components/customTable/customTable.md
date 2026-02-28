@@ -12,8 +12,28 @@ outline: deep
 
 <demo vue="./EBcustomTableTooltip.vue" />
 
-## 指令参数
+## 组件prop
 
 ```ts
-
+type propsType = {
+    tableHeader: everybodyTableHeader
+    customListLoading?: boolean
+    data: Record<string, any>[]
+    isDataSlice?: {
+        isSlice: false
+    }
+    rowHeight?: number
+    //其他参数等同于el-table
+}
+type propsType1 = {
+    tableHeader: everybodyTableHeader
+    customListLoading?: boolean
+    data: Record<string, any>[]
+    isDataSlice: {//虚拟滚动
+        isSlice: true//开启
+        num: number//展示多少行
+    }
+    rowHeight: number//虚拟滚动行高必须设置
+    //其他参数等同于el-table
+}
 ```

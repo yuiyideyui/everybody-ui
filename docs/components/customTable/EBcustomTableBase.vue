@@ -1,4 +1,9 @@
 <template>
+  <div
+    v-eb-transition-text="{
+      value: num,
+    }"
+  ></div>
   <EbcustomTable
     width="100%"
     :stripe="false"
@@ -9,21 +14,34 @@
 </template>
 <script setup lang="tsx">
 import { everybodyTableHeader } from "everybody-ui";
-
+import { ref } from "vue";
+const num = ref(0);
 const rowClick = () => {
-  console.log("????");
+  num.value += 1000;
 };
 const header: everybodyTableHeader = [
   {
+    label: "点我不会触发行点击",
+    align: "center",
     prop: "name",
-    label: "姓名",
+    customList: [
+      {
+        cellRenderer: ({ val }: { val: string }) => {
+          return <div>{val}</div>;
+        },
+        click: () => {},
+      },
+    ],
+  },
+  {
+    prop: "name",
+    label: "点击我+1000噢",
     align: "center",
     customList: [
       {
         cellRenderer: ({ val }: { val: string }) => {
           return <div>{val}</div>;
         },
-        // click: (row: any) => {},
       },
     ],
   },
@@ -33,11 +51,19 @@ const header: everybodyTableHeader = [
     align: "center",
     customList: [
       {
-        cellRenderer: ({val,row,prop}: { val: string; row: any; prop: string }) => {
-          const addAge = (val: number, row: any, prop: string) => {
-            row[prop] += val;
+        cellRenderer: ({
+          val,
+          rowData,
+          prop,
+        }: {
+          val: string;
+          rowData: any;
+          prop: string;
+        }) => {
+          const addAge = (val: number, rowData: any, prop: string) => {
+            rowData[prop] += val;
           };
-          return <div onClick={() => addAge(1, row, prop)}>{val}</div>;
+          return <div onClick={() => addAge(1, rowData, prop)}>{val}</div>;
         },
         click: () => {},
       },

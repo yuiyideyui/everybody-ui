@@ -6,53 +6,48 @@ import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export default defineConfig({
   plugins: [
     vue(),
-    vueJsx(), // 必须放在 vue() 后面，处理你的 TSX 渲染函数
+    vueJsx(),
     dts({
-      // 生成 .d.ts 类型文件，解决你说的“TS提示没了”的问题
+      // 1. 开启类型合并，极大减小类型文件体积并提升用户体验
+      rollupTypes: true, 
       insertTypesEntry: true,
       cleanVueFileName: true,
-      outDir: resolve(__dirname, "packages/dist/types"), // monorepo 下输出到 packages/dist/types
+      // 2. 这里的 outDir 建议直接指向 dist，不要再嵌套 types 文件夹，
+      // 除非你 package.json 里的 types 路径非要在那。
+      outDir: resolve(__dirname, "packages/dist"), 
     }),
   ],
   resolve: {
-    // 确保打包时也只有一份 Vue 实例
     dedupe: ["vue", "element-plus"],
   },
   build: {
-    // 开启 sourcemap，这样报错时你能看到源码行号而非 mjs 的行号
-    sourcemap: true, 
+    // 3. 生产环境建议关闭 sourcemap 或设为 hidden
+    sourcemap: false, 
     outDir: resolve(__dirname, "packages/dist"),
     lib: {
-      // 这里的路径确保指向你的入口 main.ts
       entry: {
-        index:resolve(__dirname, "packages/main.ts"),
+        index: resolve(__dirname, "packages/main.ts"),
         resolver: resolve(__dirname, 'packages/resolver.ts')
       },
-      // name: "index",
-      // fileName: "index",
-      formats: ["es"], // 同时输出 ESM 和 UMD 格式
+      formats: ["es"], 
     },
     rollupOptions: {
-      // 【关键】防止 Element Plus 被打包进去导致 tableId 冲突
+      // 4. 使用正则更彻底地排除外部库及其子路径
       external: [
         "vue", 
-        "element-plus", 
-        /@element-plus\/icons-vue/ // 排除图标库
+        /^element-plus/, // 匹配 element-plus 及其所有子路径
+        /@element-plus\/icons-vue/ 
       ],
       output: {
-        // 在 UMD 构建中为外部化依赖提供全局变量
-        globals: {
-          vue: "Vue",
-          "element-plus": "ElementPlus",
-        },
-        // 样式文件重命名（可选）
+        // 5. 确保按模块名生成，不带杂乱的 hash
+        entryFileNames: `[name].js`,
+        chunkFileNames: `chunks/[name].js`,
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'style.css') return 'everybody.css';
-          return assetInfo.name;
+          return assetInfo.name || '[name].[ext]';
         },
       },
     },
