@@ -35,7 +35,7 @@ jobs:
 
       # --- 第一步：打包库 ---
       - name: Build Library
-        run: npm run everybody-ui:build
+        run: npm run build
 
       # --- 第二步：发布到 NPM（仅在有 Tag 时运行） ---
       - name: Publish to NPM (自动检测版本)
