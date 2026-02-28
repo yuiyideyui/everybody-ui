@@ -17,10 +17,12 @@
 <script setup lang="tsx">
 import { ref } from "vue";
 import { ElTooltip } from "element-plus";
+import { everybodyTableHeader } from "everybody-ui";
+
 const tooltipTrigger = ref();
 const tooltipContent = ref("");
 const showTooltip = ref(false);
-const header = [
+const header:everybodyTableHeader = [
   {
     prop: "address",
     label: "Tooltip",
@@ -28,14 +30,7 @@ const header = [
     showOverflowTooltip: true,
     customList: [
       {
-        cellRenderer: (
-          el: Element,
-          binding: any,
-          Vnode: any,
-          val: string,
-          row: any,
-          prop: string,
-        ) => {
+        cellRenderer: ({val}: { val: string }) => {
           return <>{val}</>;
         },
         click: (row: any) => {},
@@ -48,14 +43,7 @@ const header = [
     align: "center",
     customList: [
       {
-        cellRenderer: (
-          el: Element,
-          binding: any,
-          Vnode: any,
-          val: string,
-          row: any,
-          prop: string,
-        ) => {
+        cellRenderer: ({val}: { val: string }) => {
           return (
             <div
               class="ellipsis2"
@@ -74,7 +62,7 @@ const header = [
   },
 ];
 // 动态检测是否真的溢出了，如果没有溢出则不显示 Tooltip
-const checkOverflow = (e,val) => {
+const checkOverflow = (e: Event, val: string) => {
   const target = e.currentTarget as HTMLElement;
   // 只有溢出才处理
   if (target.scrollHeight > target.offsetHeight) {

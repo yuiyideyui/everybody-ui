@@ -1,22 +1,43 @@
-import type { DirectiveBinding, VNode } from 'vue'
+import type { DirectiveBinding, VNode } from "vue";
 type ItableHeaderNoChildren = {
-    prop: string
-    label: string
-    align?: string
-    customList?: {
-        cellRenderer?: (el: Element, binding: DirectiveBinding, Vnode: VNode, val: string, row: any, prop: string) => void //这里需要执行一个H函数--->render(h(ElButton, { class: 'bar', innerHTML: 'hello' }), el) 这里主要可以渲染一个组件
-        click?: (row: any) => void
-    }[]
-    showOverflowTooltip?: boolean
-    width?: string
-    boxClass?: string
-    boxStyle?: string
-    children?: never;
-}[]
+  prop: string;
+  label: string;
+  align?: string;
+  customList?: {
+    cellRenderer?: (
+      nodeData: {
+        //this row value
+        val: string;
+        //this row
+        row: {
+          [key: string]: any;
+        };
+        //this row prop -> row[prop] === val
+        prop: string;
+      },
+      el: Element,
+      binding: DirectiveBinding,
+      Vnode: VNode,
+    ) => void;
+    /**
+     * use click stopPropagation,stop rowClick Event
+     * @param row this row
+     * @returns void
+     */
+    click?: (row: { [key: string]: any }) => void;
+  }[];
+  showOverflowTooltip?: boolean;
+  width?: string;
+  boxClass?: string;
+  boxStyle?: string;
+  children?: never;
+}[];
 type ItableHeaderChildren = {
-    children: ItableHeaderNoChildren // 支持多级表头
-    label: string
-    align?: string
-    prop?: never
-}[]
-export type everybodyTableHeader = ItableHeaderNoChildren | ItableHeaderChildren
+  children: ItableHeaderNoChildren; // 支持多级表头
+  label: string;
+  align?: string;
+  prop?: never;
+}[];
+export type everybodyTableHeader =
+  | ItableHeaderNoChildren
+  | ItableHeaderChildren;
