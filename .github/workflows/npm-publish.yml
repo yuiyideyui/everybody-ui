@@ -43,6 +43,7 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN }}
           access: "public"
+          package: ./packages/package.json
 
       # --- 第三步：打包文档 ---
       # 此时 NPM 包可能已经发布，文档构建可以确保是最新的
