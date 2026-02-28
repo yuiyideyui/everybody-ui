@@ -2,7 +2,7 @@
 outline: deep
 ---
 
-# v-eb-transition-text,文本过渡
+# 文本过渡：v-eb-transition-text
 
 用于数字或文本变更时的平滑过渡动画。
 

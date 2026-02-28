@@ -3,13 +3,13 @@
 layout: home
 
 hero:
-  name: "yui_docs"
+  name: "Everybody-UI_DOCS"
   text: "docs"
-  tagline: My great project tagline
+  tagline: 哈？
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: 安装
+      link: /install
     # - theme: alt
     #   text: API Examples
     #   link: /api-examples

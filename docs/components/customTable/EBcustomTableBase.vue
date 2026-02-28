@@ -1,13 +1,16 @@
 <template>
-  <eb-customTable
+  <EbcustomTable
     width="100%"
     :stripe="false"
     :tableHeader="header"
     :data="data"
-  ></eb-customTable>
+    @rowClick="rowClick"
+  ></EbcustomTable>
 </template>
 <script setup lang="tsx">
-import { ref } from "vue";
+const rowClick = ()=>{
+  console.log('????')
+}
 const header = [
   {
     prop: "name",
@@ -25,7 +28,7 @@ const header = [
         ) => {
           return <div>{val}</div>;
         },
-        click: (row: any) => {},
+        // click: (row: any) => {},
       },
     ],
   },

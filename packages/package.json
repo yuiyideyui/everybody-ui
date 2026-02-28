@@ -1,0 +1,35 @@
+{
+  "name": "everybody-ui",
+  "version": "1.0.14",
+  "private": false,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/yuiyideyui/everybody-ui"
+  },
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/types/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/main.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./resolver": {
+      "types": "./dist/resolver.d.ts",
+      "import": "./dist/resolver.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build --config ../vite.config.ts"
+  },
+  "peerDependencies": {
+    "element-plus": "^2.13.2"
+  },
+  "dependencies": {
+    "vue": "^3.5.20"
+  }
+}
