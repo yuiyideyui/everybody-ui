@@ -1,13 +1,29 @@
-import type { App } from 'vue'
-import customTable from './components/table/src/customTable.vue'
-import type { everybodyTableHeader } from './components/table/src/customTable.type'
+import type { App, Component } from 'vue'
+import EbcustomTable from './components/table/src/EbcustomTable.vue'
 import { initDirective } from './directives/directive'
-export { customTable }
-export type { everybodyTableHeader }
+
+export interface EverybodyUIOptions {
+  global?: boolean // 是否全局注册组件
+}
+
+export { EbcustomTable }
+
+const components: Record<string, Component> = {
+  'EbCustomTable': EbcustomTable,
+}
 
 export default {
-  install(app: App) {
+  install(app: App, options: EverybodyUIOptions = { global: true }) {
     initDirective(app)
-    app.component('eb-customTable', customTable)
+
+    // 2. 根据参数决定是否要 app.component 全量注册
+    if (options.global !== false) {
+      for (const [name, component] of Object.entries(components)) {
+        app.component(name, component)
+      }
+      console.log('[Everybody-UI] 全量组件已注册')
+    } else {
+      console.log('[Everybody-UI] 按需模式：组件需通过 Resolver 或手动引入')
+    }
   }
 }

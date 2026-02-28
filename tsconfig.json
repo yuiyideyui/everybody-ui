@@ -1,10 +1,26 @@
 {
   "compilerOptions": {
-    "jsx": "preserve",           // 保持 JSX，交给 Vite/Babel 处理
-    "jsxImportSource": "vue",    // 关键：指定 JSX 的来源是 vue
-    "types": ["vite/client"],    // 确保包含环境定义
-    "moduleResolution": "node",
-    "strict": true
+    "target": "ESNext",
+    "module": "ESNext",
+    // 关键修复：将 node 改为 bundler，这样 TS 才会正确从 package.json 的 exports 找类型
+    "moduleResolution": "bundler", 
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "strict": true,
+    "skipLibCheck": true, // 跳过库文件的类型检查，防止第三方库报错
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "types": ["vite/client"]
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.vue", "docs/**/*.vue"]
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "packages/**/*.vue",
+    ".vitepress/**/*.ts",
+    ".vitepress/**/*.vue",
+    "docs/**/*.ts",
+    "docs/**/*.vue"
+  ]
 }
