@@ -1,4 +1,4 @@
-name: CI/CD Release
+name: CI/CD Release & Publish
 
 on:
   push:
@@ -9,15 +9,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  id-token: write # 如果你决定用 Trusted Publishing，这个是必须的
+  contents: write # 部署 Pages 和发布 Release 需要
+  id-token: write # npm Trusted Publishing (OIDC) 必须
 
 jobs:
   release:
-    name: Build and Release
+    name: Build, Test and Deploy
     runs-on: ubuntu-latest
-    # 引用环境以获取 NPM_TOKEN
-    environment: NPM_TOKEN
     
     steps:
       - name: Checkout
@@ -26,34 +24,36 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
           cache: npm
 
       - name: Install Dependencies
-        run: npm ci --include=dev --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
+
+      # --- 验证环节 ---
+      - name: Run Tests
+        run: npm test --if-present
 
       # --- 第一步：打包库 ---
       - name: Build Library
-        run: npm run build
+        run: npm run build --if-present
 
-      # --- 第二步：发布到 NPM（仅在有 Tag 时运行） ---
-      - name: Publish to NPM (自动检测版本)
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: "public"
-          package: ./packages/package.json
+      # --- 第二步：发布到 NPM ---
+      # 仅在有 v* 标签时触发发布
+      - name: Publish to NPM
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npm publish --provenance --access public
 
       # --- 第三步：打包文档 ---
-      # 此时 NPM 包可能已经发布，文档构建可以确保是最新的
       - name: Build Docs
-        run: npm run docs:build
+        run: npm run docs:build --if-present
 
       # --- 第四步：部署文档 ---
+      # 仅在 main 分支推送时更新文档
       - name: Deploy Docs to GitHub Pages
         if: github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4 # 建议升级到 v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/.vitepress/dist
