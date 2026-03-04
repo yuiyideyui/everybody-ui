@@ -1,0 +1,15 @@
+{
+  "name": "everybody-ui-playground",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "everybody-ui": "file:../packages",
+    "element-plus": "^2.13.2",
+    "vue": "^3.5.29"
+  }
+}
