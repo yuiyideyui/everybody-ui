@@ -34,10 +34,8 @@ const playgroundHref = computed(() => {
 
   const source = demoSourceMap[demoId]
   const search = new URLSearchParams({
-    id: demoId,
-    template: encodeBase64(source.template),
-    script: encodeBase64(source.script),
-    style: encodeBase64(source.style)
+    demo: demoId,
+    code: encodeBase64(source)
   })
 
   return `/playground/?${search.toString()}`

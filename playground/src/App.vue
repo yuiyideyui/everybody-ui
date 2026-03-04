@@ -2,56 +2,92 @@
   <main class="playground">
     <section class="editor-panel">
       <h1>Everybody UI Playground</h1>
-      <p>支持通过 URL 注入 template / script / style，并自动回填到编辑器。</p>
+      <p>支持 SFC 在线编辑、模板切换、错误查看和分享链接。</p>
 
-      <label>
-        <span>template</span>
-        <textarea v-model="templateCode" spellcheck="false" />
+      <label class="demo-picker">
+        <span>模板</span>
+        <select v-model="activeDemoId" @change="handleDemoChange">
+          <option v-for="demo in replDemos" :key="demo.id" :value="demo.id">
+            {{ demo.label }}
+          </option>
+        </select>
       </label>
+      <p class="demo-description">{{ activeDemo?.description }}</p>
 
       <label>
-        <span>script</span>
-        <textarea v-model="scriptCode" spellcheck="false" />
-      </label>
-
-      <label>
-        <span>style</span>
-        <textarea v-model="styleCode" spellcheck="false" />
+        <span>App.vue</span>
+        <textarea v-model="sfcCode" spellcheck="false" />
       </label>
 
       <div class="actions">
-        <button type="button" @click="resetFromUrl">重置为 URL 示例</button>
+        <button type="button" @click="resetToDefault">恢复默认代码</button>
+        <button type="button" @click="copyShareLink">复制分享链接</button>
       </div>
-      <p v-if="activeDemoId" class="hint">当前示例 ID：{{ activeDemoId }}</p>
-      <p v-else class="error">未命中示例映射，当前仅展示源码，不渲染预览。</p>
+      <p v-if="shareTip" class="hint">{{ shareTip }}</p>
     </section>
 
     <section class="preview-panel">
-      <component :is="activeComponent" v-if="activeComponent" />
-      <div v-else class="empty">请通过文档页的 Open in Playground 按钮打开示例。</div>
+      <h2>预览</h2>
+      <div class="preview-canvas">
+        <PreviewRunner :comp="previewComponent" />
+      </div>
+
+      <section class="error-panel">
+        <h3>错误面板</h3>
+        <p v-if="!compileError && !runtimeError" class="hint">暂无错误</p>
+        <pre v-if="compileError" class="error-block">[编译错误]\n{{ compileError }}</pre>
+        <pre v-if="runtimeError" class="error-block">[运行时错误]\n{{ runtimeError }}</pre>
+      </section>
     </section>
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import DemoTransition from '../../docs/Directives/NumTransition/DemoTransition.vue'
-import DemoTransitionFormat from '../../docs/Directives/NumTransition/DemoTransitionFormat.vue'
-import EBCustomTableBase from '../../docs/components/customTable/EBcustomTableBase.vue'
-import EBCustomTableTooltip from '../../docs/components/customTable/EBcustomTableTooltip.vue'
-import { demoSourceMap, type DemoSourceId } from './lib/demoSourceMap'
+import {
+  computed,
+  defineComponent,
+  h,
+  markRaw,
+  onErrorCaptured,
+  ref,
+  watch,
+  type Component
+} from 'vue'
+import { compileScript, compileStyle, compileTemplate, parse } from '@vue/compiler-sfc'
+import { replDemoMap, replDemos } from './lib/replDemos'
 
-const demoComponentMap: Record<DemoSourceId, unknown> = {
-  customTableBase: EBCustomTableBase,
-  customTableTooltip: EBCustomTableTooltip,
-  numTransitionBase: DemoTransition,
-  numTransitionFormat: DemoTransitionFormat
-}
+const FALLBACK_DEMO_ID = replDemos[0].id
+const activeDemoId = ref(FALLBACK_DEMO_ID)
+const sfcCode = ref('')
+const previewComponent = ref<Component | null>(null)
+const compileError = ref('')
+const runtimeError = ref('')
+const shareTip = ref('')
 
-const templateCode = ref('')
-const scriptCode = ref('')
-const styleCode = ref('')
-const activeDemoId = ref<DemoSourceId | ''>('')
+const PreviewRunner = defineComponent({
+  name: 'PreviewRunner',
+  props: {
+    comp: {
+      type: Object,
+      default: null
+    }
+  },
+  setup(props) {
+    onErrorCaptured((err) => {
+      runtimeError.value = err instanceof Error ? `${err.message}\n${err.stack ?? ''}` : String(err)
+      return false
+    })
+
+    return () => {
+      if (!props.comp) {
+        return h('div', { class: 'empty' }, '等待代码编译...')
+      }
+      return h(props.comp as Component)
+    }
+  }
+})
+
+const activeDemo = computed(() => replDemoMap[activeDemoId.value] ?? replDemoMap[FALLBACK_DEMO_ID])
 
 function decodeBase64(value: string) {
   try {
@@ -61,47 +97,156 @@ function decodeBase64(value: string) {
   }
 }
 
-function readFromUrl() {
-  const search = new URLSearchParams(window.location.search)
-  const id = search.get('id') as DemoSourceId | null
+function encodeBase64(value: string) {
+  return btoa(unescape(encodeURIComponent(value)))
+}
 
-  const template = decodeBase64(search.get('template') ?? '')
-  const script = decodeBase64(search.get('script') ?? '')
-  const style = decodeBase64(search.get('style') ?? '')
+function rewriteImports(code: string) {
+  const aliasMap: Record<string, string> = {
+    vue: '/@id/vue',
+    'element-plus': '/@id/element-plus',
+    'everybody-ui': '/@id/everybody-ui'
+  }
 
-  templateCode.value = template
-  scriptCode.value = script
-  styleCode.value = style
+  return code
+    .replace(/from\s+['"]([^'"]+)['"]/g, (full, specifier) => {
+      if (aliasMap[specifier]) {
+        return `from '${aliasMap[specifier]}'`
+      }
+      return full
+    })
+    .replace(/import\s+['"]([^'"]+)['"]/g, (full, specifier) => {
+      if (aliasMap[specifier]) {
+        return `import '${aliasMap[specifier]}'`
+      }
+      return full
+    })
+}
 
-  if (id && id in demoSourceMap) {
-    activeDemoId.value = id
-    if (!templateCode.value && !scriptCode.value && !styleCode.value) {
-      const fallback = demoSourceMap[id]
-      templateCode.value = fallback.template
-      scriptCode.value = fallback.script
-      styleCode.value = fallback.style
+let styleEl: HTMLStyleElement | null = null
+
+function mountStyles(cssText: string) {
+  if (styleEl) {
+    styleEl.remove()
+    styleEl = null
+  }
+
+  if (!cssText.trim()) return
+
+  styleEl = document.createElement('style')
+  styleEl.setAttribute('data-playground-style', 'true')
+  styleEl.textContent = cssText
+  document.head.appendChild(styleEl)
+}
+
+async function compileAndRun() {
+  compileError.value = ''
+  runtimeError.value = ''
+
+  try {
+    const descriptor = parse(sfcCode.value, { filename: 'PlaygroundDemo.vue' }).descriptor
+    const id = 'playground-demo'
+    const script = compileScript(descriptor, { id })
+
+    let code = script.content.replace(/export\s+default/, 'const __sfc__ =')
+
+    if (descriptor.template) {
+      const template = compileTemplate({
+        id,
+        source: descriptor.template.content,
+        filename: 'PlaygroundDemo.vue',
+        compilerOptions: {
+          bindingMetadata: script.bindings
+        }
+      })
+
+      if (template.errors.length) {
+        throw new Error(template.errors.map((error) => String(error)).join('\n'))
+      }
+
+      code += `\n${template.code}\n__sfc__.render = render\nexport default __sfc__`
+    } else {
+      code += '\nexport default __sfc__'
     }
-  } else {
-    activeDemoId.value = ''
+
+    const mergedCss = descriptor.styles
+      .map((style, index) => {
+        const styleResult = compileStyle({
+          filename: 'PlaygroundDemo.vue',
+          id,
+          source: style.content,
+          scoped: style.scoped
+        })
+        if (styleResult.errors.length) {
+          throw new Error(styleResult.errors.map((error) => String(error)).join('\n'))
+        }
+        return `/* style-${index} */\n${styleResult.code}`
+      })
+      .join('\n')
+
+    mountStyles(mergedCss)
+
+    const rewritten = rewriteImports(code)
+    const blob = new Blob([rewritten], { type: 'text/javascript' })
+    const url = URL.createObjectURL(blob)
+
+    try {
+      const loaded = await import(/* @vite-ignore */ `${url}?t=${Date.now()}`)
+      previewComponent.value = markRaw(loaded.default)
+    } finally {
+      URL.revokeObjectURL(url)
+    }
+  } catch (error) {
+    previewComponent.value = null
+    compileError.value = error instanceof Error ? `${error.message}\n${error.stack ?? ''}` : String(error)
   }
 }
 
-function resetFromUrl() {
-  readFromUrl()
+function handleDemoChange() {
+  sfcCode.value = activeDemo.value.code
 }
 
-const activeComponent = computed(() => {
-  if (!activeDemoId.value) return null
-  return demoComponentMap[activeDemoId.value]
+function resetToDefault() {
+  sfcCode.value = activeDemo.value.code
+}
+
+async function copyShareLink() {
+  const url = new URL(window.location.href)
+  url.searchParams.set('demo', activeDemoId.value)
+  url.searchParams.set('code', encodeBase64(sfcCode.value))
+
+  try {
+    await navigator.clipboard.writeText(url.toString())
+    shareTip.value = '分享链接已复制'
+  } catch {
+    shareTip.value = `复制失败，请手动复制：${url.toString()}`
+  }
+}
+
+function initFromUrl() {
+  const search = new URLSearchParams(window.location.search)
+  const demo = search.get('demo')
+  const code = decodeBase64(search.get('code') ?? '')
+
+  if (demo && replDemoMap[demo]) {
+    activeDemoId.value = demo
+  }
+
+  sfcCode.value = code || activeDemo.value.code
+}
+
+watch(sfcCode, () => {
+  compileAndRun()
 })
 
-readFromUrl()
+initFromUrl()
+compileAndRun()
 </script>
 
 <style scoped>
 .playground {
   display: grid;
-  grid-template-columns: minmax(380px, 520px) minmax(680px, 1fr);
+  grid-template-columns: minmax(420px, 560px) minmax(680px, 1fr);
   gap: 20px;
   min-height: 100vh;
   padding: 20px;
@@ -114,6 +259,19 @@ readFromUrl()
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+}
+
+.demo-picker select {
+  margin-top: 6px;
+  width: 100%;
+  border: 1px solid #dcdfe6;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.demo-description {
+  margin: 4px 0 10px;
+  color: #606266;
 }
 
 label {
@@ -129,7 +287,7 @@ label span {
 
 textarea {
   width: 100%;
-  min-height: 150px;
+  min-height: 480px;
   border: 1px solid #dcdfe6;
   border-radius: 6px;
   padding: 10px;
@@ -141,6 +299,8 @@ textarea {
 }
 
 .actions {
+  display: flex;
+  gap: 10px;
   margin-top: 10px;
 }
 
@@ -153,12 +313,31 @@ button {
   cursor: pointer;
 }
 
-.hint {
-  color: #67c23a;
+.preview-canvas {
+  min-height: 320px;
+  border: 1px solid #ebeef5;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
 }
 
-.error {
-  color: #f56c6c;
+.error-panel {
+  margin-top: 14px;
+}
+
+.error-block {
+  margin-top: 8px;
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #cf1322;
+  border-radius: 6px;
+  padding: 10px;
+  white-space: pre-wrap;
+  font-size: 12px;
+}
+
+.hint {
+  color: #67c23a;
 }
 
 .empty {
