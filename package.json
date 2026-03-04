@@ -5,13 +5,16 @@
   "type": "module",
   "workspaces": [
     "packages",
-    "docs"
+    "docs",
+    "playground"
   ],
   "scripts": {
     "build": "npm run build -w everybody-ui",
     "docs:dev": "npm run dev -w everybody-ui-docs",
     "docs:build": "npm run build -w everybody-ui-docs",
-    "docs:preview": "npm run preview -w everybody-ui-docs"
+    "docs:preview": "npm run preview -w everybody-ui-docs",
+    "playground:dev": "npm run dev -w everybody-ui-playground",
+    "playground:build": "npm run build -w everybody-ui-playground"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
