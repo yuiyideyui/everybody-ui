@@ -2,12 +2,12 @@
 outline: deep
 ---
 
-# 表单：EbcustomTable
+# 表单： EbcustomTable
 
 ## 基础用法
 
 <DemoPlayground demo-path="/components/customTable/EBcustomTableBase.vue">
-  <demo vue="./EBcustomTableBase.vue" />
+  <!-- <demo vue="./EBcustomTableBase.vue" /> -->
 </DemoPlayground>
 
 ## 单行/多行 Tooltip
