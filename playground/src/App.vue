@@ -54,6 +54,7 @@ import {
   type Component
 } from 'vue'
 import { compileScript, compileStyle, compileTemplate, parse } from '@vue/compiler-sfc'
+import ts from 'typescript'
 import { replDemoMap, replDemos } from './lib/replDemos'
 
 const FALLBACK_DEMO_ID = replDemos[0].id
@@ -89,6 +90,27 @@ const PreviewRunner = defineComponent({
 
 const activeDemo = computed(() => replDemoMap[activeDemoId.value] ?? replDemoMap[FALLBACK_DEMO_ID])
 
+
+function normalizeSfcSource(source: string) {
+  const hasTableTag = /<\/?EbcustomTable|<\/?EbCustomTable|<\/?eb-custom-table/.test(source)
+
+  let normalized = source
+    .replace(/<EbcustomTable/g, '<eb-custom-table')
+    .replace(/<EbCustomTable/g, '<eb-custom-table')
+    .replace(/<\/EbcustomTable>/g, '</eb-custom-table>')
+    .replace(/<\/EbCustomTable>/g, '</eb-custom-table>')
+
+  if (hasTableTag && !normalized.includes('EbCustomTable') && normalized.includes('<script setup')) {
+    normalized = normalized.replace(
+      /<script\s+setup[^>]*>/,
+      (matched) => `${matched}
+import { EbcustomTable as EbCustomTable } from 'everybody-ui'`
+    )
+  }
+
+  return normalized
+}
+
 function decodeBase64(value: string) {
   try {
     return decodeURIComponent(escape(atob(value)))
@@ -102,10 +124,11 @@ function encodeBase64(value: string) {
 }
 
 function rewriteImports(code: string) {
+  const origin = window.location.origin
   const aliasMap: Record<string, string> = {
-    vue: '/@id/vue',
-    'element-plus': '/@id/element-plus',
-    'everybody-ui': '/@id/everybody-ui'
+    vue: `${origin}/src/lib/runtime/vue.ts`,
+    'element-plus': `${origin}/src/lib/runtime/element-plus.ts`,
+    'everybody-ui': `${origin}/src/lib/runtime/everybody-ui.ts`
   }
 
   return code
@@ -121,6 +144,16 @@ function rewriteImports(code: string) {
       }
       return full
     })
+}
+
+
+function patchTsxCustomDirectives(code: string) {
+  return code.replace(
+    /<([A-Za-z][\w]*)\s+v-([\w-]+)=\{\{([\s\S]*?)\}\}\s*><\/\1>/g,
+    (_, tag: string, directive: string, expression: string) => {
+      return `withDirectives(<${tag}></${tag}>, [[resolveDirective('${directive}')!, {${expression.trim()}}]])`
+    }
+  )
 }
 
 let styleEl: HTMLStyleElement | null = null
@@ -144,7 +177,8 @@ async function compileAndRun() {
   runtimeError.value = ''
 
   try {
-    const descriptor = parse(sfcCode.value, { filename: 'PlaygroundDemo.vue' }).descriptor
+    const normalizedSource = normalizeSfcSource(sfcCode.value)
+    const descriptor = parse(normalizedSource, { filename: 'PlaygroundDemo.vue' }).descriptor
     const id = 'playground-demo'
     const script = compileScript(descriptor, { id })
 
@@ -175,7 +209,8 @@ async function compileAndRun() {
           filename: 'PlaygroundDemo.vue',
           id,
           source: style.content,
-          scoped: style.scoped
+          scoped: style.scoped,
+          preprocessLang: style.lang as 'css' | 'scss' | 'sass' | 'less' | 'styl' | undefined
         })
         if (styleResult.errors.length) {
           throw new Error(styleResult.errors.map((error) => String(error)).join('\n'))
@@ -187,11 +222,24 @@ async function compileAndRun() {
     mountStyles(mergedCss)
 
     const rewritten = rewriteImports(code)
-    const blob = new Blob([rewritten], { type: 'text/javascript' })
+    const jsxReadyCode = patchTsxCustomDirectives(rewritten)
+    const withVueJsxRuntime = `import { h, Fragment, resolveDirective, withDirectives } from '${window.location.origin}/src/lib/runtime/vue.ts'
+${jsxReadyCode}`
+    const transpiled = ts.transpileModule(withVueJsxRuntime, {
+      compilerOptions: {
+        module: ts.ModuleKind.ESNext,
+        target: ts.ScriptTarget.ES2020,
+        jsx: ts.JsxEmit.React,
+        jsxFactory: 'h',
+        jsxFragmentFactory: 'Fragment'
+      }
+    }).outputText
+
+    const blob = new Blob([transpiled], { type: 'text/javascript' })
     const url = URL.createObjectURL(blob)
 
     try {
-      const loaded = await import(/* @vite-ignore */ `${url}?t=${Date.now()}`)
+      const loaded = await import(/* @vite-ignore */ url)
       previewComponent.value = markRaw(loaded.default)
     } finally {
       URL.revokeObjectURL(url)

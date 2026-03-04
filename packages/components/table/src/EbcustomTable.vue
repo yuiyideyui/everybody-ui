@@ -23,7 +23,7 @@
 
 <script setup lang="tsx">
 import { ElTableColumn } from 'element-plus'
-import type { everybodyTableHeader } from './EbcustomTable.type'
+import type { everybodyTableHeader } from './EbCustomTable.type'
 import {
     ref,
     computed,

@@ -7,5 +7,7 @@ import App from './App.vue'
 const app = createApp(App)
 
 app.use(ElementPlus)
-app.use(everybody)
+app.use(everybody, {
+  global: true
+})
 app.mount('#app')
