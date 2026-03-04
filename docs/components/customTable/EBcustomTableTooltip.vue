@@ -1,10 +1,10 @@
 <template>
-  <EbcustomTable
+  <eb-custom-table
     width="100%"
     :stripe="false"
     :tableHeader="header"
     :data="data"
-  ></EbcustomTable>
+  ></eb-custom-table>
   <el-tooltip
     ref="tooltipRef"
     :visible="showTooltip"
@@ -17,7 +17,7 @@
 <script setup lang="tsx">
 import { ref } from "vue";
 import { ElTooltip } from "element-plus";
-import { everybodyTableHeader } from "everybody-ui";
+import type { everybodyTableHeader } from "everybody-ui";
 
 const tooltipTrigger = ref();
 const tooltipContent = ref("");

@@ -4,16 +4,16 @@
       value: num,
     }"
   ></div>
-  <EbcustomTable
+  <eb-custom-table
     width="100%"
     :stripe="false"
     :tableHeader="header"
     :data="data"
     @rowClick="rowClick"
-  ></EbcustomTable>
+  ></eb-custom-table>
 </template>
 <script setup lang="tsx">
-import { everybodyTableHeader } from "everybody-ui";
+import type { everybodyTableHeader } from "everybody-ui";
 import { ref } from "vue";
 const num = ref(0);
 const rowClick = () => {

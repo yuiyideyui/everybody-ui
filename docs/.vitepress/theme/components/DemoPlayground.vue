@@ -38,7 +38,7 @@ const playgroundHref = computed(() => {
     code: encodeBase64(source)
   })
 
-  return `/playground/?${search.toString()}`
+  return `http://localhost:5173/?${search.toString()}`
 })
 </script>
 
