@@ -54,6 +54,7 @@ import {
   type Component
 } from 'vue'
 import { compileScript, compileStyle, compileTemplate, parse } from '@vue/compiler-sfc'
+import ts from 'typescript'
 import { replDemoMap, replDemos } from './lib/replDemos'
 
 const FALLBACK_DEMO_ID = replDemos[0].id
@@ -102,10 +103,11 @@ function encodeBase64(value: string) {
 }
 
 function rewriteImports(code: string) {
+  const origin = window.location.origin
   const aliasMap: Record<string, string> = {
-    vue: '/@id/vue',
-    'element-plus': '/@id/element-plus',
-    'everybody-ui': '/@id/everybody-ui'
+    vue: `${origin}/@id/vue`,
+    'element-plus': `${origin}/@id/element-plus`,
+    'everybody-ui': `${origin}/@id/everybody-ui`
   }
 
   return code
@@ -175,7 +177,8 @@ async function compileAndRun() {
           filename: 'PlaygroundDemo.vue',
           id,
           source: style.content,
-          scoped: style.scoped
+          scoped: style.scoped,
+          preprocessLang: style.lang as 'css' | 'scss' | 'sass' | 'less' | 'styl' | undefined
         })
         if (styleResult.errors.length) {
           throw new Error(styleResult.errors.map((error) => String(error)).join('\n'))
@@ -187,11 +190,19 @@ async function compileAndRun() {
     mountStyles(mergedCss)
 
     const rewritten = rewriteImports(code)
-    const blob = new Blob([rewritten], { type: 'text/javascript' })
+    const transpiled = ts.transpileModule(rewritten, {
+      compilerOptions: {
+        module: ts.ModuleKind.ESNext,
+        target: ts.ScriptTarget.ES2020,
+        jsx: ts.JsxEmit.Preserve
+      }
+    }).outputText
+
+    const blob = new Blob([transpiled], { type: 'text/javascript' })
     const url = URL.createObjectURL(blob)
 
     try {
-      const loaded = await import(/* @vite-ignore */ `${url}?t=${Date.now()}`)
+      const loaded = await import(/* @vite-ignore */ url)
       previewComponent.value = markRaw(loaded.default)
     } finally {
       URL.revokeObjectURL(url)
