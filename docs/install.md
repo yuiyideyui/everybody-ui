@@ -81,3 +81,21 @@ module.exports = {
   ],
 }
 ```
+
+## 使用 Playground 调试 Demo
+
+仓库根目录提供了 `playground/` workspace（Vite + Vue3），用于本地快速调试组件。
+
+```shell
+pnpm install
+pnpm playground:dev
+```
+
+默认示例位于 `playground/src/App.vue`，内置了一个可编辑 JSON 的 `EbCustomTable` 演示区，修改数据后会实时刷新。
+
+如果你希望先验证构建产物，可以执行：
+
+```shell
+pnpm playground:build
+```
+

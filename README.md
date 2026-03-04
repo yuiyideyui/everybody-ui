@@ -8,16 +8,19 @@ Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项
 
 ## Monorepo 结构
 
-本仓库当前包含两个 workspace：
+本仓库当前包含三个 workspace：
 
 - `packages/`：组件库包（`everybody-ui`）
 - `docs/`：文档站点包（`everybody-ui-docs`）
+- `playground/`：本地调试组件的 Vite + Vue3 示例工程（`everybody-ui-playground`）
 
 ## 目录结构
 
 ```text
 .
 ├── docs/                # 文档站点 workspace
+│   └── package.json
+├── playground/          # 组件调试 playground workspace
 │   └── package.json
 ├── packages/            # 组件库 workspace
 │   └── package.json
@@ -50,6 +53,18 @@ pnpm docs:build
 
 ```bash
 npm run build
+```
+
+### 5. 启动 Playground 调试
+
+```bash
+pnpm playground:dev
+```
+
+### 6. 构建 Playground
+
+```bash
+pnpm playground:build
 ```
 
 ## 常用 Workspace 命令

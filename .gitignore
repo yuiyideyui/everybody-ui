@@ -2,3 +2,5 @@
 /node_modules
 /docs/.vitepress/dist
 /docs/.vitepress/cache
+/playground/node_modules
+/playground/dist
