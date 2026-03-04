@@ -90,6 +90,27 @@ const PreviewRunner = defineComponent({
 
 const activeDemo = computed(() => replDemoMap[activeDemoId.value] ?? replDemoMap[FALLBACK_DEMO_ID])
 
+
+function normalizeSfcSource(source: string) {
+  const hasTableTag = /<\/?EbcustomTable|<\/?EbCustomTable|<\/?eb-custom-table/.test(source)
+
+  let normalized = source
+    .replace(/<EbcustomTable/g, '<eb-custom-table')
+    .replace(/<EbCustomTable/g, '<eb-custom-table')
+    .replace(/<\/EbcustomTable>/g, '</eb-custom-table>')
+    .replace(/<\/EbCustomTable>/g, '</eb-custom-table>')
+
+  if (hasTableTag && !normalized.includes('EbCustomTable') && normalized.includes('<script setup')) {
+    normalized = normalized.replace(
+      /<script\s+setup[^>]*>/,
+      (matched) => `${matched}
+import { EbcustomTable as EbCustomTable } from 'everybody-ui'`
+    )
+  }
+
+  return normalized
+}
+
 function decodeBase64(value: string) {
   try {
     return decodeURIComponent(escape(atob(value)))
@@ -105,9 +126,9 @@ function encodeBase64(value: string) {
 function rewriteImports(code: string) {
   const origin = window.location.origin
   const aliasMap: Record<string, string> = {
-    vue: `${origin}/@id/vue`,
-    'element-plus': `${origin}/@id/element-plus`,
-    'everybody-ui': `${origin}/@id/everybody-ui`
+    vue: `${origin}/src/lib/runtime/vue.ts`,
+    'element-plus': `${origin}/src/lib/runtime/element-plus.ts`,
+    'everybody-ui': `${origin}/src/lib/runtime/everybody-ui.ts`
   }
 
   return code
@@ -123,6 +144,16 @@ function rewriteImports(code: string) {
       }
       return full
     })
+}
+
+
+function patchTsxCustomDirectives(code: string) {
+  return code.replace(
+    /<([A-Za-z][\w]*)\s+v-([\w-]+)=\{\{([\s\S]*?)\}\}\s*><\/\1>/g,
+    (_, tag: string, directive: string, expression: string) => {
+      return `withDirectives(<${tag}></${tag}>, [[resolveDirective('${directive}')!, {${expression.trim()}}]])`
+    }
+  )
 }
 
 let styleEl: HTMLStyleElement | null = null
@@ -146,7 +177,8 @@ async function compileAndRun() {
   runtimeError.value = ''
 
   try {
-    const descriptor = parse(sfcCode.value, { filename: 'PlaygroundDemo.vue' }).descriptor
+    const normalizedSource = normalizeSfcSource(sfcCode.value)
+    const descriptor = parse(normalizedSource, { filename: 'PlaygroundDemo.vue' }).descriptor
     const id = 'playground-demo'
     const script = compileScript(descriptor, { id })
 
@@ -190,11 +222,16 @@ async function compileAndRun() {
     mountStyles(mergedCss)
 
     const rewritten = rewriteImports(code)
-    const transpiled = ts.transpileModule(rewritten, {
+    const jsxReadyCode = patchTsxCustomDirectives(rewritten)
+    const withVueJsxRuntime = `import { h, Fragment, resolveDirective, withDirectives } from '${window.location.origin}/src/lib/runtime/vue.ts'
+${jsxReadyCode}`
+    const transpiled = ts.transpileModule(withVueJsxRuntime, {
       compilerOptions: {
         module: ts.ModuleKind.ESNext,
         target: ts.ScriptTarget.ES2020,
-        jsx: ts.JsxEmit.Preserve
+        jsx: ts.JsxEmit.React,
+        jsxFactory: 'h',
+        jsxFragmentFactory: 'Fragment'
       }
     }).outputText
 
