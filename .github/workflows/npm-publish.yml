@@ -41,11 +41,15 @@ jobs:
 
       # --- 第二步：发布到 NPM ---
       # 仅在有 v* 标签时触发发布
-      - name: Publish to NPM
-        # 仅在有 v* 标签时触发发布
-        if: startsWith(github.ref, 'refs/tags/v')
-        # 这里直接指定目录 ./packages，并带上 OIDC 必须的参数
-        run: npm publish ./packages --access public --provenance
+      - name: Publish to NPM (自动检测版本)
+        # 移除了 if: startsWith(...)，让它在每次 push 到 main 时都运行检测
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          access: "public"
+          # 指向你真正的组件库目录
+          package: ./packages/package.json
+          # 如果你依然想开启 OIDC 签名证明
+          provenance: true
 
       # --- 第三步：打包文档 ---
       - name: Build Docs
