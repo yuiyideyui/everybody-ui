@@ -6,7 +6,6 @@
   ></div>
   <eb-custom-table
     width="100%"
-    :stripe="false"
     :tableHeader="header"
     :data="data"
     @rowClick="rowClick"

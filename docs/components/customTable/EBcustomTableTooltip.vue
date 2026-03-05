@@ -1,7 +1,6 @@
 <template>
   <eb-custom-table
     width="100%"
-    :stripe="false"
     :tableHeader="header"
     :data="data"
   ></eb-custom-table>
@@ -90,7 +89,7 @@ const data = [
   },
 ];
 </script>
-<style lang="less">
+<style scoped>
 .ellipsis2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;

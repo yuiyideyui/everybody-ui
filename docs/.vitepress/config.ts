@@ -4,7 +4,7 @@ import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import { EverybodyUIResolver } from "everybody-ui/resolver";
-import { vitepressDemoPlugin } from "vitepress-demo-plugin";
+import { vitepressDemoPlugin } from "../vitepress-demo-plugin/dist";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import vitepressTheme from './vitepressTheme'
@@ -32,6 +32,7 @@ export default defineConfig({
       dedupe: ["vue", "element-plus"],
       alias: {
         "everybody-ui": resolve(__dirname, "../../packages/dist"),
+        "vitepress-demo-plugin": resolve(__dirname,"../vitepress-demo-plugin")
       },
     },
     ssr: {
