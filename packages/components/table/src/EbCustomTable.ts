@@ -1,45 +1,41 @@
-import type { DirectiveBinding, VNode } from "vue";
-type ItableHeaderNoChildren = {
+import type { DirectiveBinding, VNode, App } from "vue";
+
+export interface TableRowData {
+  [key: string]: any;
+}
+
+export interface CustomListConfig {
+  cellRenderer?: (
+    nodeData: {
+      val: any;
+      rowData: TableRowData;
+      prop: string;
+    },
+    el: Element,
+    binding: DirectiveBinding,
+    vnode: VNode,
+  ) => any; // 改为 any 兼容性最强
+  click?: (rowData: TableRowData) => void;
+}
+
+export interface ItableHeaderNoChildren {
   prop: string;
   label: string;
-  align?: string;
-  customList?: {
-    cellRenderer?: (
-      nodeData: {
-        //this rowData value
-        val: string;
-        //this rowData
-        rowData: {
-          [key: string]: any;
-        };
-        //this rowData prop -> rowData[prop] === val
-        prop: string;
-      },
-      el: Element,
-      binding: DirectiveBinding,
-      Vnode: VNode,
-    ) => void;
-    /**
-     * use click stopPropagation,stop rowClick Event
-     * @param rowData this rowData
-     * @returns void
-     */
-    click?: (rowData: { [key: string]: any }) => void;
-  }[];
+  align?: 'left' | 'center' | 'right'; // 限制可选值提高类型安全性
+  customList?: CustomListConfig[];
   showOverflowTooltip?: boolean;
-  width?: string;
+  width?: string | number;
   boxClass?: string;
   boxStyle?: string;
   children?: never;
-};
-type ItableHeaderChildren = {
-  children: ItableHeaderNoChildren[]; // 支持多级表头
-  label: string;
-  align?: string;
-  prop?: never;
-};
-// 3. 定义单个表头项类型（联合类型）
-type everybodyTableHeaderItem = ItableHeaderNoChildren | ItableHeaderChildren;
+}
 
-// 4. 最终导出的数组类型
+export interface ItableHeaderChildren {
+  children: ItableHeaderNoChildren[];
+  label: string;
+  align?: 'left' | 'center' | 'right';
+  prop?: never;
+}
+
+export type everybodyTableHeaderItem = ItableHeaderNoChildren | ItableHeaderChildren;
 export type everybodyTableHeader = everybodyTableHeaderItem[];
