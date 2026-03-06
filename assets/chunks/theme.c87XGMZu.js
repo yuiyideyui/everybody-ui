@@ -198,7 +198,7 @@ const data = [
   },
 ];
 <\/script>
-<style scoped>
+<style>
 .ellipsis2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
