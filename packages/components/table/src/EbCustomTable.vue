@@ -23,7 +23,7 @@
 
 <script setup lang="tsx">
 import { ElTableColumn } from 'element-plus'
-import type { everybodyTableHeader } from './EbCustomTable'
+import type { everybodyTableHeader, everybodyTableProps, propsType1 } from './EbCustomTable'
 import {
     ref,
     computed,
@@ -32,26 +32,8 @@ import {
     defineComponent,
     type PropType
 } from 'vue'
-type propsType = {
-    tableHeader: everybodyTableHeader
-    customListLoading?: boolean
-    data: Record<string, any>[]
-    isDataSlice?: {
-        isSlice: false
-    }
-    rowHeight?: number
-}
-type propsType1 = {
-    tableHeader: everybodyTableHeader
-    customListLoading?: boolean
-    data: Record<string, any>[]
-    isDataSlice: {
-        isSlice: true
-        num: number
-    }
-    rowHeight: number
-}
-const props = withDefaults(defineProps<propsType | propsType1>(), {
+
+const props = withDefaults(defineProps<everybodyTableProps>(), {
     customListLoading: false,
     isDataSlice: () => ({
         isSlice: false as const
