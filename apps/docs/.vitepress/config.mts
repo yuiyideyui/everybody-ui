@@ -70,7 +70,10 @@ export default defineConfig({
       // 1. 强制使用单例，防止 tableId 查找失败
       dedupe: ["vue", "element-plus"],
       alias: {
-        "everybody-ui": resolve(__dirname, "../../packages/dist"),
+        // 注意：子路径必须排在主包名之前，否则会被主包名截获
+        "everybody-ui/resolver": resolve(__dirname, "../../../packages/everybody-ui/dist/resolver.js"),
+        // 2. 处理主包引用 (如 import ... from 'everybody-ui')
+        "everybody-ui": resolve(__dirname, "../../../packages/everybody-ui/dist"),
         "vitepress-demo-plugin": resolve(__dirname,"../vitepress-demo-plugin")
       },
     },

@@ -45,7 +45,7 @@ jobs:
         # 仅在有 v* 标签时触发发布
         if: startsWith(github.ref, 'refs/tags/v')
         # 这里直接指定目录 ./packages，并带上 OIDC 必须的参数
-        run: npm publish ./packages --access public --provenance
+        run: npm publish ./packages/everybody-ui --access public --provenance
 
       # --- 第三步：打包文档 ---
       - name: Build Docs
@@ -58,4 +58,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4 # 建议升级到 v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/.vitepress/dist
+          publish_dir: apps/docs/.vitepress/dist
