@@ -1,4 +1,4 @@
-name: npm-publish
+name: Build and Deploy
 
 on:
   push:
@@ -9,53 +9,58 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # 部署 Pages 和发布 Release 需要
-  id-token: write # npm Trusted Publishing (OIDC) 必须
+  contents: write
+  id-token: write
 
 jobs:
   release:
-    name: Build, Test and Deploy
+    name: Build and Deploy
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Turbo 计算变更需要完整的 git 历史
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9 # 确保和你本地 pnpm 版本一致
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "20" # 目前建议用 20 或 22 LTS，24 太新可能不稳定
           registry-url: "https://registry.npmjs.org"
-          cache: npm
+          cache: 'pnpm'
+
+      # --- 关键：Turbo 远程缓存 (可选，但推荐) ---
+      # 如果不想配置远程服务器，本地缓存也可以加快第二次运行速度
+      - name: Turborepo Cache
+        uses: dtinth/setup-github-actions-cache@v2
 
       - name: Install Dependencies
-        run: npm ci --legacy-peer-deps
+        run: pnpm install --frozen-lockfile
 
-      # --- 验证环节 ---
-      - name: Run Tests
-        run: npm test --if-present
+      # --- 使用 Turbo 一键构建 ---
+      # 这会自动按照依赖顺序执行: everybody-ui:build -> everybody-ui-docs:build
+      - name: Build All
+        run: pnpm turbo build
 
-      # --- 第一步：打包库 ---
-      - name: Build Library
-        run: npm run build --if-present
-
-      # --- 第二步：发布到 NPM ---
-      # 仅在有 v* 标签时触发发布
+      # --- 发布到 NPM ---
       - name: Publish to NPM
-        # 仅在有 v* 标签时触发发布
         if: startsWith(github.ref, 'refs/tags/v')
-        # 这里直接指定目录 ./packages，并带上 OIDC 必须的参数
+        # 直接运行打包好的目录发布
         run: npm publish ./packages/everybody-ui --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # --- 第三步：打包文档 ---
-      - name: Build Docs
-        run: npm run docs:build --if-present
-
-      # --- 第四步：部署文档 ---
-      # 仅在 main 分支推送时更新文档
+      # --- 部署文档 ---
       - name: Deploy Docs to GitHub Pages
         if: github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v4 # 建议升级到 v4
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # 确保路径和你实际打出来的文档目录一致
           publish_dir: apps/docs/.vitepress/dist
