@@ -21,46 +21,52 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Turbo 计算变更需要完整的 git 历史
+          fetch-depth: 0 # Turbo 需要完整的 git 历史来对比变更
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9 # 确保和你本地 pnpm 版本一致
+          version: 9
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # 目前建议用 20 或 22 LTS，24 太新可能不稳定
+          node-version: "20"
           registry-url: "https://registry.npmjs.org"
-          cache: 'pnpm'
+          cache: 'pnpm' # 自动缓存 pnpm 依赖
 
-      # --- 关键：Turbo 远程缓存 (可选，但推荐) ---
-      # 如果不想配置远程服务器，本地缓存也可以加快第二次运行速度
-      - name: Turborepo Cache
-        uses: dtinth/setup-github-actions-cache@v2
+      # --- 替换原来的缓存插件为官方 actions/cache ---
+      - name: Turbo Cache
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          # key 包含操作系统和 sha，确保唯一性；restore-keys 用于匹配最近的缓存
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      # --- 使用 Turbo 一键构建 ---
-      # 这会自动按照依赖顺序执行: everybody-ui:build -> everybody-ui-docs:build
+      # --- 使用 Turbo 构建 ---
       - name: Build All
-        run: pnpm turbo build
+        # 指定 --cache-dir 确保 Turbo 使用我们上面配置的缓存目录
+        run: pnpm turbo build --cache-dir=".turbo"
 
       # --- 发布到 NPM ---
       - name: Publish to NPM
+        # 只有在推送 v 开头的 tag 时才执行
         if: startsWith(github.ref, 'refs/tags/v')
-        # 直接运行打包好的目录发布
         run: npm publish ./packages/everybody-ui --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # --- 部署文档 ---
       - name: Deploy Docs to GitHub Pages
+        # 只有在 main 分支推送时才更新文档
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # 确保路径和你实际打出来的文档目录一致
+          # 确保这个路径指向你 VitePress 打包后的真实位置
           publish_dir: apps/docs/.vitepress/dist
