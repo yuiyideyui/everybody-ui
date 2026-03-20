@@ -15,9 +15,9 @@
     "types": ["vite/client"]
   },
   "include": [
-    "packages/**/*.ts",
-    "packages/**/*.tsx",
-    "packages/**/*.vue",
+    "packages/everybody-ui/**/*.ts",
+    "packages/everybody-ui/**/*.tsx",
+    "packages/everybody-ui/**/*.vue",
     ".vitepress/**/*.ts",
     ".vitepress/**/*.vue",
     "docs/**/*.ts",

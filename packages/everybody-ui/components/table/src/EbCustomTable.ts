@@ -39,3 +39,23 @@ export interface ItableHeaderChildren {
 
 export type everybodyTableHeaderItem = ItableHeaderNoChildren | ItableHeaderChildren;
 export type everybodyTableHeader = everybodyTableHeaderItem[];
+export interface propsType  {
+    tableHeader: everybodyTableHeader
+    customListLoading?: boolean
+    data: Record<string, any>[]
+    isDataSlice?: {
+        isSlice: false
+    }
+    rowHeight?: number
+}
+export interface propsType1  {
+    tableHeader: everybodyTableHeader
+    customListLoading?: boolean
+    data: Record<string, any>[]
+    isDataSlice: {
+        isSlice: true
+        num: number
+    }
+    rowHeight: number
+}
+export type everybodyTableProps = propsType | propsType1

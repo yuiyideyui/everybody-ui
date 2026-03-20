@@ -1,6 +1,5 @@
-/packages/dist
-/node_modules
-/docs/.vitepress/dist
-/docs/.vitepress/cache
-/playground/node_modules
-/playground/dist
+packages/everybody-ui/dist
+.turbo
+node_modules
+apps/docs/.vitepress/dist
+apps/docs/.vitepress/cache

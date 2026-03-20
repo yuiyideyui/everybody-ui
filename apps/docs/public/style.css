@@ -1,0 +1,33 @@
+:root {
+  /* 定义渐变变量 */
+  --title-gradient: linear-gradient(to right top, #ebad8c, #f5b56e, #efc34d, #d6d62a, #a8eb12);
+  --vp-home-hero-image-background-image: var(--title-gradient);
+  --vp-home-hero-image-filter: blur(72px);
+}
+/* 定义 mixin */
+/* 使用 mixin */
+.name.clip {
+  background-image: var(--title-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* 兼容性兜底 */
+  color: #efc34d;
+}
+header .title span {
+  background-image: var(--title-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* 兼容性兜底 */
+  color: #efc34d;
+  display: inline-block;
+}
+.VPButton.color-d8e7f3 {
+  background-color: #f7b758;
+  opacity: 0.9;
+}
+.VPButton.color-d8e7f3:hover {
+  background-color: #f1bc2a;
+  opacity: 1;
+}

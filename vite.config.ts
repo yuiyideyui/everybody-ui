@@ -17,7 +17,7 @@ export default defineConfig({
       cleanVueFileName: true,
       // 2. 这里的 outDir 建议直接指向 dist，不要再嵌套 types 文件夹，
       // 除非你 package.json 里的 types 路径非要在那。
-      outDir: resolve(__dirname, "packages/dist"), 
+      outDir: resolve(__dirname, "packages/everybody-ui/dist"), 
     }),
   ],
   resolve: {
@@ -26,11 +26,11 @@ export default defineConfig({
   build: {
     // 3. 生产环境建议关闭 sourcemap 或设为 hidden
     sourcemap: false, 
-    outDir: resolve(__dirname, "packages/dist"),
+    outDir: resolve(__dirname, "packages/everybody-ui/dist"),
     lib: {
       entry: {
-        index: resolve(__dirname, "packages/main.ts"),
-        resolver: resolve(__dirname, 'packages/resolver.ts')
+        index: resolve(__dirname, "packages/everybody-ui/main.ts"),
+        resolver: resolve(__dirname, 'packages/everybody-ui/resolver.ts')
       },
       formats: ["es"], 
     },

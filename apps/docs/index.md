@@ -1,0 +1,33 @@
+---
+# https://vitepress.dev/reference/default-theme-home-page
+layout: home
+
+hero:
+  name: "Everybody-UI"
+  tagline: Everybody UI 是一个基于 **Vite + Vue + 其他UI的生态**构建的组件库。
+  actions:
+    - theme: brand
+      text: 快速开始
+      link: /guide/start
+    - theme: color-d8e7f3
+      text: Github
+      link: https://github.com/yuiyideyui/everybody-ui
+  image:
+      src: /logo.png
+      alt: logo
+features:
+  - icon: 🛠️
+    title: 安装便捷
+    details: 仅需几行代码，就可以在你的项目中添加使用
+    link: /guide/start
+  - icon:
+     src: /element-plus.png
+    title: Elment-plus生态
+    details: 基于element-plus生态构建，和element-plus一起使用
+    link: https://element-plus.org
+  - icon: ⚡️
+    title: 指令
+    details: 提供了不同的vue指令
+    link: /Directives/NumTransition/animate
+---
+

@@ -9,7 +9,8 @@
     "preview": "vitepress preview"
   },
   "dependencies": {
-    "everybody-ui": "file:../packages",
-    "element-plus": "^2.13.2"
+    "element-plus": "^2.13.2",
+    "everybody-ui": "workspace:*",
+    "shiki": "^4.0.2"
   }
 }
