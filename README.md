@@ -8,24 +8,22 @@ Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项
 
 ## Monorepo 结构
 
-本仓库当前包含三个 workspace：
+本仓库当前包含两个 workspace：
 
 - `packages/everybody-ui/`：组件库包（`everybody-ui`）
-- `docs/`：文档站点包（`everybody-ui-docs`）
-- `playground/`：本地调试组件的 Vite + Vue3 示例工程（`everybody-ui-playground`）
+- `apps/docs/`：文档站点包（`everybody-ui-docs`）
 
 ## 目录结构
 
 ```text
 .
-├── docs/                # 文档站点 workspace
-│   └── package.json
-├── playground/          # 组件调试 playground workspace
+├── apps/docs/                # 文档站点 workspace
 │   └── package.json
 ├── packages/everybody-ui/            # 组件库 workspace
 │   └── package.json
 ├── package.json         # monorepo 根配置（workspaces + 统一脚本）
 ├── vite.config.ts       # 组件库构建配置
+├── turbo.json           # Turbo 构建配置
 └── tsconfig.json        # TypeScript 配置
 ```
 
@@ -37,42 +35,15 @@ Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项
 pnpm install
 ```
 
-### 2. 启动文档开发环境
+### 2. 构建packages与apps
 
 ```bash
-pnpm docs:dev
+pnpm turbo build check-types
+pnpm turbo check-types build
 ```
 
-### 3. 构建文档
+### 3. 启动文档开发环境
 
 ```bash
-pnpm docs:build
-```
-
-### 4. 构建组件库
-
-```bash
-npm run build
-```
-
-### 5. 启动 Playground 调试
-
-```bash
-pnpm playground:dev
-```
-
-### 6. 构建 Playground
-
-```bash
-pnpm playground:build
-```
-
-## 常用 Workspace 命令
-
-```bash
-# 仅构建组件库 workspace
-npm run build -w everybody-ui
-
-# 仅启动文档 workspace
-npm run dev -w everybody-ui-docs
+pnpm turbo dev
 ```
