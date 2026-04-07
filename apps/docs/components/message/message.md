@@ -6,7 +6,7 @@ outline: deep
 
 ## 基础用法
 
-<demo vue="./EbMessage.vue" playgroundUrl="https://yuiyideyui.github.io/Everybody-ui-playground" />
+<demo vue="./EbMessageBase.vue" playgroundUrl="https://yuiyideyui.github.io/Everybody-ui-playground" />
 
 ## 自定义关闭
 
