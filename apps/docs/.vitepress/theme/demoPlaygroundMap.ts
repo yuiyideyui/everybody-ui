@@ -2,8 +2,8 @@ import tableBaseSource from '../../components/customTable/EBcustomTableBase.vue?
 import tableTooltipSource from '../../components/customTable/EBcustomTableTooltip.vue?raw'
 import transitionSource from '../../Directives/NumTransition/DemoTransition.vue?raw'
 import transitionFormatSource from '../../Directives/NumTransition/DemoTransitionFormat.vue?raw'
-import messageBaseSource from '../../components/message/EbMessageBase.vue?raw'
-import messageCloseSource from '../../components/message/EbMessageClose.vue?raw'
+import messageBaseSource from '../../components/message/EBmessageBase.vue?raw'
+import messageCloseSource from '../../components/message/EBmessageClose.vue?raw'
 
 export const demoSourceMap = {
   tableBase: tableBaseSource,

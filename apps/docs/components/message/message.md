@@ -6,11 +6,11 @@ outline: deep
 
 ## 基础用法
 
-<demo vue="./EbMessageBase.vue" playgroundUrl="https://yuiyideyui.github.io/Everybody-ui-playground" />
+<demo vue="./EBmessageBase.vue" playgroundUrl="https://yuiyideyui.github.io/Everybody-ui-playground" />
 
 ## 自定义关闭
 
-<demo vue="./EbMessageClose.vue" playgroundUrl="https://yuiyideyui.github.io/Everybody-ui-playground" />
+<demo vue="./EBmessageClose.vue" playgroundUrl="https://yuiyideyui.github.io/Everybody-ui-playground" />
 
 
 ## 组件参数
