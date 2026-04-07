@@ -1,0 +1,1 @@
+import{e as a}from"./theme.BjUv6NNF.js";import{d as n,o as u,c,j as r,J as o,a as s}from"./framework.3oOvuWDt.js";const d=n({__name:"EBmessageClose",setup(l){const t=()=>{const{close:e}=a({jsx:()=>o("div",null,[s("这是一个消息提示！"),o("button",{onClick:()=>e()},[s("关闭")])]),position:"top"})};return(e,i)=>(u(),c("div",null,[r("button",{onClick:t},"点击显示消息提示")]))}});export{d as default};
