@@ -7,5 +7,6 @@
 export {}
 declare global {
   const EbCustomTable: typeof import('everybody-ui').EbCustomTable
+  const EbMessage: typeof import('everybody-ui').EbMessage
   const EbcustomTable: typeof import('everybody-ui').EbcustomTable
 }

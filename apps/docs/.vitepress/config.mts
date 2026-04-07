@@ -39,6 +39,7 @@ export default defineConfig({
           text: "组件",
           items: [
             { text: "自定义表格", link: "/components/customTable/customTable" },
+            { text: "消息提示", link: "/components/message/message" },
           ],
         },
       ],
