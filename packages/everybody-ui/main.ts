@@ -1,14 +1,16 @@
 import type { App, Component } from 'vue'
 import EbCustomTable from './components/table/src/EbCustomTable.vue'
+import { EbMessage } from './components/message/src/EBmessage'
 import { initDirective } from './directives/directive'
 
 export interface EverybodyUIOptions {
   global?: boolean // 是否全局注册组件
 }
-export { EbCustomTable }
+export { EbCustomTable,EbMessage }
 export * from './index.type'
 const components: Record<string, Component> = {
   'EbCustomTable': EbCustomTable,
+  'EbMessage': EbMessage,
 }
 
 export default {
