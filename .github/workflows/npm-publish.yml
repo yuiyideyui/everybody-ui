@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: npm-publish.yml
 
 on:
   push:
