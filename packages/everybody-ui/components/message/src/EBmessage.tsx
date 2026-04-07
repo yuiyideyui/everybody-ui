@@ -1,15 +1,16 @@
 import { defineComponent, h, render, type VNode } from "vue";
-
-export const EbMessage: (options: {
+export interface EbMessageOptions {
   jsx: VNode | (() => VNode);
   position: "top" | "bottom" | "left" | "right" | "center";
   timeClose?: number;
-}) => {
+}
+
+export const EbMessage: (options: EbMessageOptions) => {
   close: () => void;
 } = (options) => {
     // 1. 创建容器
     const container = document.createElement("div");
-
+    container.className = "eb-message-container";
     // 2. 销毁函数
     const close = () => {
       render(null, container);
@@ -18,7 +19,7 @@ export const EbMessage: (options: {
 
     // 3. 样式计算逻辑
     const getStyle = (): Record<string, string | number> => {
-      const baseStyle: Record<string, any> = {
+      const baseStyle: Record<string, string | number> = {
         position: "fixed",
         zIndex: 1000,
         backgroundColor: "#fff",

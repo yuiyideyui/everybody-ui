@@ -6,11 +6,10 @@ import { initDirective } from './directives/directive'
 export interface EverybodyUIOptions {
   global?: boolean // 是否全局注册组件
 }
-export { EbCustomTable,EbMessage }
+export { EbCustomTable, EbMessage }
 export * from './index.type'
 const components: Record<string, Component> = {
   'EbCustomTable': EbCustomTable,
-  'EbMessage': EbMessage,
 }
 
 export default {
