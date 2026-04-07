@@ -6,7 +6,6 @@ import 'element-plus/dist/index.css'
 import everybody from 'everybody-ui'
 import 'everybody-ui/everybody-ui.css' 
 import './custom.css'
-import DemoPlayground from './components/DemoPlayground.vue'
 
 export default {
   extends: DefaultTheme,
@@ -15,6 +14,5 @@ export default {
     app.use(everybody,{
       global:false
     })
-    app.component('DemoPlayground', DemoPlayground)
   }
 }
