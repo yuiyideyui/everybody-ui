@@ -59,6 +59,12 @@ jobs:
         # 这会同时构建组件库和文档
         run: pnpm turbo build --cache-dir=".turbo"
 
+      - name: Debug Info
+        run: |
+          node -v
+          npm -v
+          ls -la packages/everybody-ui
+          cat packages/everybody-ui/package.json
       # --- 发布到 NPM (仅在推送 Tag 时) ---
       - name: Publish to NPM
         if: startsWith(github.ref, 'refs/tags/v')
