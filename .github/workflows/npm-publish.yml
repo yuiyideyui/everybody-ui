@@ -5,37 +5,44 @@ on:
     branches:
       - main
     tags:
-      - "v*"
-  workflow_dispatch:
+      - "v*" # 只有推送 v1.0.0 这种标签时才会触发 NPM 发布
+  workflow_dispatch: # 允许手动触发执行
 
+# 关键：OIDC 发布必须具备的权限
 permissions:
-  contents: write
-  id-token: write
+  contents: write    # 允许发布 GitHub Pages 和创建 Release
+  id-token: write    # 关键：允许 npm 验证 GitHub 身份（OIDC）
 
 jobs:
   release:
     name: Build and Deploy
     runs-on: ubuntu-latest
     
+    # 如果你在 npm 官网配置了 Environment，请取消下面两行的注释并填入环境名
+    # environment: 
+    #   name: release
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Turbo 计算变更需要完整的 git 历史
+          fetch-depth: 0 # Turbo 需要完整的 git history 来计算缓存
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          run_install: false
+          # 如果你的项目根目录有 pnpm-lock.yaml，它会自动读取版本
+          run_install: false 
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          # 使用 Trusted Publisher 时建议保留 registry-url 确保环境纯净
           registry-url: "https://registry.npmjs.org"
-          cache: 'pnpm' # 自动缓存 pnpm 依赖库
+          cache: 'pnpm'
 
-      # --- 修正后的 Turbo 缓存逻辑：使用官方 actions/cache ---
+      # --- Turbo 缓存配置 ---
       - name: Turbo Cache
         uses: actions/cache@v4
         with:
@@ -47,22 +54,23 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      # --- 使用 Turbo 构建并指定缓存目录 ---
+      # --- 执行构建 ---
       - name: Build All
-        # 显式指定 --cache-dir=".turbo"，与上面的 cache path 对应
+        # 这会同时构建组件库和文档
         run: pnpm turbo build --cache-dir=".turbo"
 
-      # --- 发布到 NPM ---
+      # --- 发布到 NPM (仅在推送 Tag 时) ---
       - name: Publish to NPM
         if: startsWith(github.ref, 'refs/tags/v')
+        # 注意：使用 Trusted Publisher 后，不再需要 env: NODE_AUTH_TOKEN
+        # --provenance 会生成来源证明，增强包的可信度
         run: npm publish ./packages/everybody-ui --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # --- 部署文档 ---
+      # --- 部署文档到 GitHub Pages (仅在 main 分支) ---
       - name: Deploy Docs to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # 确保这里的路径与你 VitePress 打包后的输出目录一致
           publish_dir: apps/docs/.vitepress/dist
