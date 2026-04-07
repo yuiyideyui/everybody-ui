@@ -13,7 +13,7 @@ outline: deep
 <demo vue="./EBmessageClose.vue" playgroundUrl="https://yuiyideyui.github.io/Everybody-ui-playground" />
 
 
-## 组件prop
+## 组件参数
 
 ```ts
 export const EbMessage: (options: {
