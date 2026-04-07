@@ -23,7 +23,7 @@ export default defineConfig({
     logo: "/logo.png",
     nav: [
       { text: "指令", link: "/Directives/NumTransition/animate" },
-      { text: "组件", link: "/components/customTable/customTable" },
+      { text: "组件", link: "/components/customTable/EBcustomTable" },
     ],
     sidebar: {
       "/Directives/": [
@@ -38,8 +38,8 @@ export default defineConfig({
         {
           text: "组件",
           items: [
-            { text: "自定义表格", link: "/components/customTable/customTable" },
-            { text: "消息提示", link: "/components/message/message" },
+            { text: "自定义表格", link: "/components/customTable/EBcustomTable" },
+            { text: "消息提示", link: "/components/message/EBmessage" },
           ],
         },
       ],
