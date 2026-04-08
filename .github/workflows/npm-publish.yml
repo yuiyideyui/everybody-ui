@@ -25,4 +25,11 @@ jobs:
       - run: pnpm install
       - run: pnpm turbo build check-types
       - run: pnpm turbo check-types build
-      - run: npm publish
+      - name: Publish Package
+        run: |
+          # 进入你真正想要发布的 UI 组件库目录
+          cd packages/everybody-ui
+          
+          # 检查该目录下的 package.json 是否已经去掉了 "private": true
+          # 并且版本号 (version) 是否已经更新
+          npm publish --access public --provenance
