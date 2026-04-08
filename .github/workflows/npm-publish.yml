@@ -2,45 +2,24 @@ name: Publish Package
 
 on:
   push:
-    # 建议只有推送 tag 时才发布，或者保持 main 分支但确保你手动改了版本号
-    branches: [main]
     tags:
       - 'v*'
 
 permissions:
-  id-token: write  # OIDC 必须
+  id-token: write  # Required for OIDC
   contents: read
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4 # 建议升级到 v4
+      - uses: actions/setup-node@v6
         with:
-          version: 10 # 匹配你本地的 pnpm 版本
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      # 使用 turbo 仅构建 UI 包，避免文档包错误干扰
-      - name: Build UI Package
-        run: pnpm turbo build --filter=everybody-ui
-
-      - name: Publish to NPM
-        # 核心：必须进入子包文件夹发布，否则 --provenance 会失效
-        run: |
-          cd packages/everybody-ui
-          npm publish --access public --provenance
-        env:
-          # 使用 Trusted Publishing (OIDC) 时，不需要设置 NODE_AUTH_TOKEN
-          # NPM 会自动识别当前 GitHub Action 的身份
-          NODE_AUTH_TOKEN: ""
+      - run: pnpm install
+      - run: pnpm turbo build check-types
+      - run: pnpm turbo check-types build
+      - run: npm publish
