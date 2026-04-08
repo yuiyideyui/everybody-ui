@@ -5,7 +5,12 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git@github.com/yuiyideyui/everybody-ui"
+    "url": "https://github.com/yuiyideyui/everybody-ui",
+    "directory": "packages/everybody-ui" 
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
