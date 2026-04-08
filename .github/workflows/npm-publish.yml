@@ -14,7 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-
+      # 2. 安装 pnpm (最新版)
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
