@@ -1,46 +1,43 @@
-name: Publish Package
+name: Publish NPM Package
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
-# 权限配置：id-token 必须为 write 才能通过 OIDC 获取 NPM 临时凭证
 permissions:
-  id-token: write
   contents: read
+  packages: write
+  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # 使用稳定的 v4 版本
+      - uses: actions/checkout@v4
 
-      # 如果你使用的是 pnpm，请启用以下步骤（如果是 npm 则删除这步）
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          version: 10 # 匹配你本地的 pnpm 版本
+          version: 10
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: '20' # 建议使用 LTS 版本 (20 或 22)
-          cache: 'pnpm'      # 如果用 npm 则改为 'npm'
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
-      # 1. 安装依赖并构建
-      - run: pnpm install
-      
-      # 2. 仅构建 UI 包（避免文档包报错导致中断）
-      - name: Build UI Package
-        run: pnpm turbo build --filter=everybody-ui
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
 
-      # 3. 进入子包目录发布
-      # 必须在子包目录下执行，否则 --provenance 无法正确关联源码路径
-      - name: Publish to NPM
+      - name: Build everybody-ui package
+        run: pnpm --filter @yuiyideyui/everybody-ui build
+
+      - name: Publish package to npm
         run: |
           cd packages/everybody-ui
           npm publish --access public --provenance
         env:
-          # 注意：使用 Trusted Publishing 时不需要配置 NODE_AUTH_TOKEN
-          # NPM 会自动识别 GitHub 的 OIDC Token
-          NODE_AUTH_TOKEN: ""
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
