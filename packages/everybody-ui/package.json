@@ -1,12 +1,12 @@
 {
   "name": "@yuiyideyui/everybody-ui",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "private": false,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yuiyideyui/everybody-ui.git",
-    "directory": "packages/everybody-ui" 
+    "url": "https://github.com/yuiyideyui/everybody-ui.git",
+    "directory": "packages/everybody-ui"
   },
   "publishConfig": {
     "access": "public",
