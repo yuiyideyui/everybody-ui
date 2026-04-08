@@ -2,12 +2,12 @@ name: Publish Package
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [main]    # 监听 main 分支的普通 push
+    tags: ['v*']        # 监听版本 Tag
 
 permissions:
   id-token: write  # Required for OIDC
-  contents: read
+  contents: write
 
 jobs:
   publish:
@@ -26,10 +26,13 @@ jobs:
       - run: pnpm turbo build check-types
       - run: pnpm turbo check-types build
       - name: Publish Package
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          # 进入你真正想要发布的 UI 组件库目录
           cd packages/everybody-ui
-          
-          # 检查该目录下的 package.json 是否已经去掉了 "private": true
-          # 并且版本号 (version) 是否已经更新
           npm publish --access public --provenance
+      - name: Deploy Docs to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: apps/docs/.vitepress/dist # VitePress 默认输出目录
+          branch: gh-pages # 部署到的分支
+          clean: true
