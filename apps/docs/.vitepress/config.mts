@@ -3,7 +3,7 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import { EverybodyUIResolver } from "everybody-ui/resolver";
+import { EverybodyUIResolver } from "@yuiyideyui/everybody-ui/resolver";
 import { vitepressDemoPlugin } from "../vitepress-demo-plugin/dist";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -72,19 +72,19 @@ export default defineConfig({
       dedupe: ["vue", "element-plus"],
       alias: {
         // 注意：子路径必须排在主包名之前，否则会被主包名截获
-        "everybody-ui/resolver": resolve(__dirname, "../../../packages/everybody-ui/dist/resolver.js"),
-        // 2. 处理主包引用 (如 import ... from 'everybody-ui')
-        "everybody-ui": resolve(__dirname, "../../../packages/everybody-ui/dist"),
+        "@yuiyideyui/everybody-ui/resolver": resolve(__dirname, "../../../packages/everybody-ui/dist/resolver.js"),
+        // 2. 处理主包引用 (如 import ... from '@yuiyideyui/everybody-ui')
+        "@yuiyideyui/everybody-ui": resolve(__dirname, "../../../packages/everybody-ui/dist"),
         "vitepress-demo-plugin": resolve(__dirname,"../vitepress-demo-plugin")
       },
     },
     ssr: {
       // 2. 解决服务端渲染时 element-plus 内部样式或指令报错问题
-      noExternal: ["element-plus", "everybody-ui"],
+      noExternal: ["element-plus", "@yuiyideyui/everybody-ui"],
     },
     optimizeDeps: {
       // 3. 排除你的库，防止 Vite 对其进行二次加工导致上下文丢失
-      exclude: ["everybody-ui"],
+      exclude: ["@yuiyideyui/everybody-ui"],
       // 包含 element-plus 的相关依赖，确保预构建正确
       include: [
         "element-plus/es",

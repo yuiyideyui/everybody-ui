@@ -12,13 +12,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    EbCustomTable: typeof import('everybody-ui')['EbCustomTable']
+    EbCustomTable: typeof import('@yuiyideyui/everybody-ui')['EbCustomTable']
     ElButton: typeof import('element-plus/es')['ElButton']
   }
 }
 
 // For TSX support
 declare global {
-  const EbCustomTable: typeof import('everybody-ui')['EbCustomTable']
+  const EbCustomTable: typeof import('@yuiyideyui/everybody-ui')['EbCustomTable']
   const ElButton: typeof import('element-plus/es')['ElButton']
 }

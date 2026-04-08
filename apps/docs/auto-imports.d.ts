@@ -6,7 +6,7 @@
 // biome-ignore lint: disable
 export {}
 declare global {
-  const EbCustomTable: typeof import('everybody-ui').EbCustomTable
-  const EbMessage: typeof import('everybody-ui').EbMessage
-  const EbcustomTable: typeof import('everybody-ui').EbcustomTable
+  const EbCustomTable: typeof import('@yuiyideyui/everybody-ui').EbCustomTable
+  const EbMessage: typeof import('@yuiyideyui/everybody-ui').EbMessage
+  const EbcustomTable: typeof import('@yuiyideyui/everybody-ui').EbcustomTable
 }

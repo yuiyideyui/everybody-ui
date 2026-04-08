@@ -3,8 +3,8 @@ import type { App } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 // 利用你设置的别名
-import everybody from 'everybody-ui'
-import 'everybody-ui/everybody-ui.css' 
+import everybody from '@yuiyideyui/everybody-ui'
+import '@yuiyideyui/everybody-ui/everybody-ui.css' 
 import './custom.css'
 
 export default {
