@@ -10,7 +10,7 @@ Everybody UI 是一个基于 **Vite + Vue 生态**构建的组件库与文档项
 
 本仓库当前包含两个 workspace：
 
-- `packages/everybody-ui/`：组件库包（`everybody-ui`）
+- `packages/everybody-ui/`：组件库包（`@yuiyideyui/everybody-ui`）
 - `apps/docs/`：文档站点包（`everybody-ui-docs`）
 
 ## 目录结构
