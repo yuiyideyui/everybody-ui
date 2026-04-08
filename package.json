@@ -13,7 +13,7 @@
     "docs:dev": "turbo dev --filter everybody-ui-docs",
     "docs:build": "turbo build --filter everybody-ui-docs",
     "docs:preview": "turbo preview --filter everybody-ui-docs",
-    "ui:build": "turbo build --filter everybody-ui"
+    "ui:build": "turbo build --filter @yuiyideyui/everybody-ui"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

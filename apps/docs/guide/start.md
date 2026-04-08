@@ -3,7 +3,7 @@
 ## 安装
 
 ```shell
-npm install everybody-ui
+npm install @yuiyideyui/everybody-ui
 ```
 
 ## 完整引入
@@ -11,8 +11,8 @@ npm install everybody-ui
 `main.ts`
 ```ts
 import { createApp } from 'vue'
-import everybody from 'everybody-ui'
-import 'everybody-ui/everybody-ui.css' 
+import everybody from '@yuiyideyui/everybody-ui'
+import '@yuiyideyui/everybody-ui/everybody-ui.css' 
 import App from './App.vue'
 
 const app = createApp(App)
@@ -30,8 +30,8 @@ npm i unplugin-auto-import unplugin-vue-components
 `main.ts`
 ```ts
 import { createApp } from 'vue'
-import everybody from 'everybody-ui'
-import 'everybody-ui/everybody-ui.css' 
+import everybody from '@yuiyideyui/everybody-ui'
+import '@yuiyideyui/everybody-ui/everybody-ui.css' 
 import App from './App.vue'
 
 const app = createApp(App)
@@ -50,7 +50,7 @@ app.mount('#app')
 import { defineConfig } from 'vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { EverybodyUIResolver } from 'everybody-ui/resolver'
+import { EverybodyUIResolver } from '@yuiyideyui/everybody-ui/resolver'
 
 export default defineConfig({
   // ...
@@ -73,7 +73,7 @@ export default defineConfig({
 ```js  [webpack.config.js]
 const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
-import { EverybodyUIResolver } from 'everybody-ui/resolver'
+import { EverybodyUIResolver } from '@yuiyideyui/everybody-ui/resolver'
 
 module.exports = {
   // ...
