@@ -2,62 +2,42 @@ name: npm-publish
 
 on:
   push:
-    branches:
-      - main
     tags:
-      - "v*" # 只有推送 v1.0.0 这种标签时才会触发 NPM 发布
-  workflow_dispatch: # 允许手动触发执行
+      - 'v*'
+  workflow_dispatch:
 
-# 关键：OIDC 发布必须具备的权限
 permissions:
-  contents: write    # 允许发布 GitHub Pages 和创建 Release
-  id-token: write    # 关键：允许 npm 验证 GitHub 身份（OIDC）
+  contents: read
+  id-token: write
 
 jobs:
-  release:
-    name: Build and Deploy
+  publish:
+    name: Publish to npm (OIDC)
     runs-on: ubuntu-latest
-    
-    # 如果你在 npm 官网配置了 Environment，请取消下面两行的注释并填入环境名
-    # environment: 
-    #   name: release
+    # 如果你在 npm Trusted Publisher 中设置了 Environment name，取消注释并填写相同名称。
+    # environment: release
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Turbo 需要完整的 git history 来计算缓存
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          # 如果你的项目根目录有 pnpm-lock.yaml，它会自动读取版本
-          run_install: false 
+          run_install: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          # 使用 Trusted Publisher 时建议保留 registry-url 确保环境纯净
-          registry-url: "https://registry.npmjs.org"
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
-      # --- Turbo 缓存配置 ---
-      - name: Turbo Cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # --- 执行构建 ---
-      - name: Build All
-        # 这会同时构建组件库和文档
-        run: pnpm turbo build --cache-dir=".turbo"
+      - name: Build
+        run: pnpm turbo build --cache-dir='.turbo'
 
       - name: Debug Info
         run: |
