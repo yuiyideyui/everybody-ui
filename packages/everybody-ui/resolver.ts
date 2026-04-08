@@ -12,9 +12,9 @@ export function EverybodyUIResolver(): ComponentResolver {
 
         return {
           name: name,
-          from: 'everybody-ui',
+          from: '@yuiyideyui/everybody-ui',
           // 如果你的 CSS 也是按组件名分的，可以开启自动加载样式
-          // sideEffects: `everybody-ui/dist/theme/${exportName}.css`
+          // sideEffects: `@yuiyideyui/everybody-ui/dist/theme/${exportName}.css`
         }
       }
     },

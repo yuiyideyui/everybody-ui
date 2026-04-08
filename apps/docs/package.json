@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "element-plus": "^2.13.2",
-    "everybody-ui": "workspace:*",
+    "@yuiyideyui/everybody-ui": "workspace:*",
     "shiki": "^4.0.2"
   }
 }

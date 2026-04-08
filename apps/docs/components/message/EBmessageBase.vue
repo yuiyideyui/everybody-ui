@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="tsx">
-import { EbMessage } from "everybody-ui";
+import { EbMessage } from "@yuiyideyui/everybody-ui";
 const showMessage = () => {
     EbMessage({
         jsx: () => <div>这是一个消息提示！</div>,

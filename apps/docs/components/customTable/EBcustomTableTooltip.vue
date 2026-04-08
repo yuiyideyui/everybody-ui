@@ -16,7 +16,7 @@
 <script setup lang="tsx">
 import { ref } from "vue";
 import { ElTooltip } from "element-plus";
-import type { everybodyTableHeader } from "everybody-ui";
+import type { everybodyTableHeader } from "@yuiyideyui/everybody-ui";
 
 const tooltipTrigger = ref();
 const tooltipContent = ref("");

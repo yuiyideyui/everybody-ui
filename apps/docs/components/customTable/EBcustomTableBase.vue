@@ -12,7 +12,7 @@
   ></eb-custom-table>
 </template>
 <script setup lang="tsx">
-import type { everybodyTableHeader } from "everybody-ui";
+import type { everybodyTableHeader } from "@yuiyideyui/everybody-ui";
 import { ref } from "vue";
 const num = ref(0);
 const rowClick = () => {
