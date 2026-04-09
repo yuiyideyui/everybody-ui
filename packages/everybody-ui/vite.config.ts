@@ -10,9 +10,9 @@ export default defineConfig({
     vue(),
     vueJsx(),
     dts({
-      rollupTypes: false,
+      rollupTypes: true,
       // 💡 使用相对路径，Vite 会基于执行命令的目录解析
-      outDir: "dist", 
+      outDir: "dist",
       insertTypesEntry: true,
     }),
   ],

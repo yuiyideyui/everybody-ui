@@ -2,6 +2,9 @@
     <div>
         <button @click="showMessage">点击显示消息提示</button>
     </div>
+    <div>
+        <button @click="showMessageWithoutBaseStyle">点击显示消息提示无基本样式</button>
+    </div>
 </template>
 
 <script setup lang="tsx">
@@ -11,6 +14,14 @@ const showMessage = () => {
         jsx: () => <div>这是一个消息提示！</div>,
         position: "top",
         timeClose: 3000
+    })
+}
+const showMessageWithoutBaseStyle = () => {
+    EbMessage({
+        jsx: () => <div>这是一个消息提示！</div>,
+        position: "top",
+        timeClose: 3000,
+        baseStyle: false
     })
 }
 </script>
