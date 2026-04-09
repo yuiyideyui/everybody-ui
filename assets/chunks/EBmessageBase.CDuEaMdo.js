@@ -1,1 +1,0 @@
-import{g as o}from"./theme.cmDWrzs_.js";import{d as s,o as t,c as a,j as n,J as u,a as c}from"./framework.3oOvuWDt.js";const d=s({__name:"EBmessageBase",setup(r){const e=()=>{o({jsx:()=>u("div",null,[c("这是一个消息提示！")]),position:"top",timeClose:3e3})};return(i,l)=>(t(),a("div",null,[n("button",{onClick:e},"点击显示消息提示")]))}});export{d as default};
