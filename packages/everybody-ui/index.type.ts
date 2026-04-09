@@ -1,4 +1,4 @@
-import type { everybodyTableHeader } from './components/table/src/EbCustomTable'
+import type { everybodyTableHeader } from './src/components/table/src/EbCustomTable'
 export type {
     everybodyTableHeader
 }
