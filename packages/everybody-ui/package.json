@@ -1,6 +1,6 @@
 {
   "name": "@yuiyideyui/everybody-ui",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "type": "module",
   "repository": {
@@ -12,17 +12,20 @@
     "access": "public",
     "provenance": true
   },
-  "main": "./dist/index.umd.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
-  "types": "./dist/types/main.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/main.d.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./resolver": {
       "types": "./dist/resolver.d.ts",
       "import": "./dist/resolver.js"
+    },
+    "./everybody-ui.css": {
+      "import": "./dist/everybody-ui.css"
     }
   },
   "files": [
