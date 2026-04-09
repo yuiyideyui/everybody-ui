@@ -1,7 +1,7 @@
 import type { App, Component } from 'vue'
-import EbCustomTable from './components/table/src/EbCustomTable.vue'
-import { EbMessage } from './components/message/src/EBmessage'
-import { initDirective } from './directives/directive'
+import EbCustomTable from './src/components/table/src/EbCustomTable.vue'
+import { EbMessage } from './src/components/message/src/EBmessage'
+import { initDirective } from './src/directives/directive'
 
 export interface EverybodyUIOptions {
   global?: boolean // 是否全局注册组件

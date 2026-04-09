@@ -13,6 +13,7 @@ export default defineConfig({
       rollupTypes: false,
       // 💡 使用相对路径，Vite 会基于执行命令的目录解析
       outDir: "dist", 
+      insertTypesEntry: true,
     }),
   ],
   build: {
